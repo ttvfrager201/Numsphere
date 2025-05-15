@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NumSphere - VoIP & IVR Solutions</title>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary: #3498db;
+            --secondary: #2c3e50;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Navigation */
+        nav {
+            background-color: var(--secondary);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--primary);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .check-account-btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .check-account-btn:hover {
+            background-color: #2980b9;
+            color: white;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+            padding: 6rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        
+        .cta-btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 4px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        
+        .cta-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-3px);
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 5rem 0;
+            background-color: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background-color: var(--primary);
+            margin: 1rem auto 0;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background-color: #f8f9fa;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Plans Section */
+        .plans {
+            padding: 5rem 0;
+            background-color: #f8f9fa;
+        }
+        
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .plan-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .plan-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .plan-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .plan-header h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .plan-price {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        
+        .plan-price span {
+            font-size: 1rem;
+            font-weight: normal;
+        }
+        
+        .plan-features {
+            padding: 2rem;
+        }
+        
+        .plan-features ul {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        
+        .plan-features li {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .plan-features li::before {
+            content: '✓';
+            color: var(--primary);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+        
+        .plan-btn {
+            display: block;
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 0.8rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .plan-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        /* Subscribe Section */
+        .subscribe {
+            padding: 5rem 0;
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+            color: white;
+            text-align: center;
+        }
+        
+        .subscribe h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .subscribe p {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .subscribe-btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 1.2rem 3rem;
+            font-size: 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.3s, background-color 0.3s;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subscribe-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Testimonials Section */
+        .testimonials {
+            padding: 5rem 0;
+            background-color: white;
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .testimonial-card {
+            background-color: #f8f9fa;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .testimonial-text::before {
+            content: '"';
+            font-size: 4rem;
+            color: rgba(0, 0, 0, 0.1);
+            position: absolute;
+            top: -20px;
+            left: -10px;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .author-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 1rem;
+            background-color: #ddd;
+        }
+        
+        .author-info h4 {
+            margin-bottom: 0.25rem;
+        }
+        
+        .author-company {
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 3px;
+            background-color: var(--primary);
+            margin-top: 0.5rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-links {
+                margin-top: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav-links li {
+                margin: 0.5rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container nav-container">
+            <a href="#" class="logo">Num<span>Sphere</span></a>
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#plans">Plans</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="#" class="check-account-btn">Check Account</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Advanced VoIP & IVR Solutions for Your Business</h1>
+            <p>Streamline your communication with NumSphere's cutting-edge voice systems that adapt to your business needs.</p>
+            <a href="#subscribe" class="cta-btn">Get Started</a>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">Our Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📞</div>
+                    <h3>Advanced VoIP Systems</h3>
+                    <p>High-quality voice communications over IP networks with crystal clear audio and reliable connections.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>Intelligent IVR</h3>
+                    <p>Interactive Voice Response systems that guide callers efficiently and reduce wait times for your customers.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Seamless Integration</h3>
+                    <p>Easily integrate our systems with your existing CRM, helpdesk, and business management tools.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Analytics Dashboard</h3>
+                    <p>Comprehensive reporting and analytics to track call metrics and optimize your communication systems.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mobile Compatibility</h3>
+                    <p>Take your office phone system anywhere with our mobile apps for iOS and Android.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Enterprise Security</h3>
+                    <p>End-to-end encryption and advanced security protocols to keep your communications safe.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Plans Section -->
+    <section class="plans" id="plans">
+        <div class="container">
+            <h2 class="section-title">Choose Your Plan</h2>
+            <div class="plans-grid">
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h3>Starter</h3>
+                        <div class="plan-price">$XX<span>/month</span></div>
+                    </div>
+                    <div class="plan-features">
+                        <ul>
+                            <li>Up to 5 users</li>
+                            <li>Basic VoIP functionality</li>
+                            <li>Simple IVR menu</li>
+                            <li>24/7 support</li>
+                            <li>1 local number included</li>
+                        </ul>
+                        <a href="#subscribe" class="plan-btn">Select Plan</a>
+                    </div>
+                </div>
+                <div class="plan-card">
+                    <div class="plan-header" style="background-color: var(--secondary);">
+                        <h3>Business</h3>
+                        <div class="plan-price">$XX<span>/month</span></div>
+                    </div>
+                    <div class="plan-features">
+                        <ul>
+                            <li>Up to 25 users</li>
+                            <li>Advanced VoIP features</li>
+                            <li>Multi-level IVR system</li>
+                            <li>Priority support</li>
+                            <li>3 local numbers included</li>
+                            <li>Call recording & analytics</li>
+                        </ul>
+                        <a href="#subscribe" class="plan-btn" style="background-color: var(--secondary);">Select Plan</a>
+                    </div>
+                </div>
+                <div class="plan-card">
+                    <div class="plan-header" style="background-color: var(--accent);">
+                        <h3>Enterprise</h3>
+                        <div class="plan-price">$XX<span>/month</span></div>
+                    </div>
+                    <div class="plan-features">
+                        <ul>
+                            <li>Unlimited users</li>
+                            <li>Premium VoIP features</li>
+                            <li>Advanced IVR with AI capabilities</li>
+                            <li>Dedicated account manager</li>
+                            <li>10 local numbers included</li>
+                            <li>Full analytics suite</li>
+                            <li>API access for custom integrations</li>
+                        </ul>
+                        <a href="#subscribe" class="plan-btn" style="background-color: var(--accent);">Select Plan</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Subscribe Section -->
+    <section class="subscribe" id="subscribe">
+        <div class="container">
+            <h2>Ready to Transform Your Communication?</h2>
+            <p>Subscribe to NumSphere today and experience the future of business voice systems with our 30-day money-back guarantee.</p>
+            <a href="#" class="subscribe-btn">SUBSCRIBE NOW</a>
+        </div>
+    </section>
+    
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <h2 class="section-title">What Our Clients Say</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        NumSphere's VoIP system has completely transformed how our customer service team operates. The call quality is excellent, and the IVR system has reduced our response times significantly.
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-img"></div>
+                        <div class="author-info">
+                            <h4>Sarah Johnson</h4>
+                            <p class="author-company">Tech Solutions Inc.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        The integration capabilities with our existing CRM saved us countless hours of manual work. NumSphere delivers exactly what they promise - a seamless communication experience.
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-img"></div>
+                        <div class="author-info">
+                            <h4>Michael Chen</h4>
+                            <p class="author-company">Global Retail Group</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                        As a rapidly growing startup, we needed a scalable solution that could grow with us. NumSphere's flexible plans and outstanding support team made this an easy choice.
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-img"></div>
+                        <div class="author-info">
+                            <h4>Jessica Martinez</h4>
+                            <p class="author-company">Innovate Financial</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- About Section -->
+    <section class="features" id="about">
+        <div class="container">
+            <h2 class="section-title">About NumSphere</h2>
+            <p style="text-align: center; max-width: 800px; margin: 0 auto 3rem;">
+                NumSphere is a leading provider of VoIP and IVR solutions, dedicated to helping businesses of all sizes optimize their communication systems. With years of experience in the telecommunications industry, we deliver reliable, innovative, and cost-effective solutions tailored to meet your specific needs.
+            </p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🌟</div>
+                    <h3>Our Mission</h3>
+                    <p>To transform business communications through innovative voice technology solutions that empower organizations to connect better with their customers.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌎</div>
+                    <h3>Global Reach</h3>
+                    <p>Serving clients across 30+ countries with localized support and region-specific compliance features.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤝</div>
+                    <h3>Customer Focused</h3>
+                    <p>We believe in building long-term relationships with our clients by providing exceptional service and ongoing support.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section class="plans" id="contact">
+        <div class="container">
+            <h2 class="section-title">Contact Us</h2>
+            <div style="text-align: center; max-width: 600px; margin: 0 auto;">
+                <p style="margin-bottom: 2rem;">Have questions about our services? Our team is here to help you find the perfect voice solution for your business.</p>
+                <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 2rem; margin-bottom: 3rem;">
+                    <div>
+                        <h3 style="margin-bottom: 1rem; color: var(--primary);">Sales</h3>
+                        <p>sales@numsphere.com</p>
+                        <p>1-800-NUM-VOIP</p>
+                    </div>
+                    <div>
+                        <h3 style="margin-bottom: 1rem; color: var(--primary);">Support</h3>
+                        <p>support@numsphere.com</p>
+                        <p>1-800-NUM-HELP</p>
+                    </div>
+                </div>
+                <a href="#" class="cta-btn" style="margin-top: 1rem;">Request a Demo</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>NumSphere</h3>
+                    <ul class="footer-links">
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">News</a></li>
+                        <li><a href="#">Partners</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Products</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">VoIP Systems</a></li>
+                        <li><a href="#">IVR Solutions</a></li>
+                        <li><a href="#">Call Analytics</a></li>
+                        <li><a href="#">Mobile Apps</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">API References</a></li>
+                        <li><a href="#">Community Forum</a></li>
+                        <li><a href="#">Video Tutorials</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Legal</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">GDPR Compliance</a></li>
+                        <li><a href="#">Security</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 NumSphere. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
