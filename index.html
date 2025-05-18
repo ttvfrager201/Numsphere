@@ -76,7 +76,7 @@
             text-decoration: none;
             transition: color 0.3s;
             font-weight: 500;
-            padding: 0.5rem 0;
+    padding: 0.6em 1em;
             position: relative;
             display: inline-block;
         }
@@ -109,15 +109,16 @@
         .check-account-btn {
           background-color: var(--primary);
     color: white;
-    font-size: 1em;
-    padding: 0.7em 1.5em; /* vertical and horizontal padding */
-    border-radius: 20px;
+    font-size: 1em; /* or inherit */
+    padding: 0.55em 1.8em;    /* Increased vertical and horizontal padding */
+    border-radius: 999px;     /* More pronounced pill shape */
     font-weight: bold;
     line-height: 1.4;
     display: inline-block;
     transition: background-color 0.3s, transform 0.2s;
     vertical-align: middle;
     box-sizing: border-box;
+    border: none; /* Optional: ensure no border is interfering */
         }
         
         .check-account-btn:hover {
