@@ -840,6 +840,44 @@
         grid-template-columns: 1fr;
       }
     }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #4263eb !important;
+      box-shadow: 0 0 0 3px rgba(66, 99, 235, 0.15);
+    }
+    
+    .input-icon {
+      transition: all 0.3s ease;
+    }
+    
+    input:focus + .input-icon, textarea:focus + .input-icon {
+      opacity: 1;
+    }
+    
+    .btn-primary:hover .btn-icon {
+      transform: translateY(-50%) translateX(-5px);
+    }
+    
+    .btn-primary:hover::after {
+      content: '';
+      position: absolute;
+      width: 30px;
+      height: 100%;
+      top: 0;
+      right: -10px;
+      background: rgba(255, 255, 255, 0.3);
+      transform: skewX(-30deg);
+      animation: shimmer 1.5s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% {
+        transform: skewX(-30deg) translateX(-150px);
+      }
+      100% {
+        transform: skewX(-30deg) translateX(150px);
+      }
+    }
   </style>
 </head>
 <body>
@@ -1126,7 +1164,184 @@
             <div class="author-avatar-inner"></div>
           </div>
           <div class="author-info">
+            <h4>David Thompson</h4>
+            <p>IT Director, Healthcare Solutions</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Contact Form Section -->
+  <section class="contact" id="contact" style="padding: 5rem 5%; background-color: #f8f9fa; position: relative; overflow: hidden;">
+    <!-- SVG Animation Elements -->
+    <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0; z-index: 0; opacity: 0.5;" xmlns="http://www.w3.org/2000/svg">
+      <!-- Animated circles -->
+      <circle class="svg-circle" cx="5%" cy="20%" r="15" fill="#4263eb" opacity="0.2">
+        <animate attributeName="cy" values="20%;25%;20%" dur="6s" repeatCount="indefinite" />
+        <animate attributeName="r" values="15;20;15" dur="6s" repeatCount="indefinite" />
+      </circle>
+      <circle class="svg-circle" cx="95%" cy="80%" r="25" fill="#7048e8" opacity="0.15">
+        <animate attributeName="cy" values="80%;75%;80%" dur="8s" repeatCount="indefinite" />
+        <animate attributeName="r" values="25;30;25" dur="8s" repeatCount="indefinite" />
+      </circle>
+      <circle class="svg-circle" cx="80%" cy="10%" r="20" fill="#4263eb" opacity="0.1">
+        <animate attributeName="cx" values="80%;82%;80%" dur="7s" repeatCount="indefinite" />
+        <animate attributeName="r" values="20;22;20" dur="7s" repeatCount="indefinite" />
+      </circle>
+      
+      <!-- Animated paths -->
+      <path d="M0,50 Q250,80 500,50" stroke="#4263eb" stroke-width="1" fill="none" opacity="0.1">
+        <animate attributeName="d" values="M0,50 Q250,80 500,50; M0,50 Q250,20 500,50; M0,50 Q250,80 500,50" dur="15s" repeatCount="indefinite" />
+      </path>
+      <path d="M0,80 Q250,50 500,80" stroke="#7048e8" stroke-width="1" fill="none" opacity="0.1">
+        <animate attributeName="d" values="M0,80 Q250,50 500,80; M0,80 Q250,110 500,80; M0,80 Q250,50 500,80" dur="18s" repeatCount="indefinite" />
+      </path>
+    </svg>
+    
+    <div class="section-title" style="position: relative; z-index: 1;">
+      <h2>Get In Touch</h2>
+      <p>Have questions or ready to start? Send us a message and we'll get back to you within 24 hours.</p>
+    </div>
+    
+    <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); position: relative; z-index: 1;">
+      <!-- Email Icon SVG -->
+      <div style="position: absolute; top: -30px; right: 30px; background-color: #4263eb; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 8px 16px rgba(66, 99, 235, 0.3);">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M22 6L12 13L2 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <animate attributeName="stroke-dasharray" from="0,48" to="48,0" dur="1.5s" begin="0s" repeatCount="indefinite"/>
+          </path>
+        </svg>
+      </div>
+      
+      <form action="https://formsubmit.co/your.email@example.com" method="POST" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <!-- FormSubmit.co honeypot to prevent spam -->
+        <input type="text" name="_honey" style="display: none;">
+        <!-- Disable captcha -->
+        <input type="hidden" name="_captcha" value="false">
 
+        <div style="display: flex; gap: 1rem;">
+          <div style="flex: 1; position: relative;">
+            <label for="name" style="display: block; margin-bottom: 0.5rem; color: #666;">Full Name</label>
+            <input type="text" name="name" id="name" required style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #e9ecef; transition: border-color 0.3s;">
+            <svg class="input-icon" style="position: absolute; right: 10px; top: 38px; width: 20px; height: 20px; opacity: 0.5;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="#4263eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="#4263eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div style="flex: 1; position: relative;">
+            <label for="email" style="display: block; margin-bottom: 0.5rem; color: #666;">Email Address</label>
+            <input type="email" name="email" id="email" required style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #e9ecef; transition: border-color 0.3s;">
+            <svg class="input-icon" style="position: absolute; right: 10px; top: 38px; width: 20px; height: 20px; opacity: 0.5;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="#4263eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M22 6L12 13L2 6" stroke="#4263eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        
+        <div style="position: relative;">
+          <label for="company" style="display: block; margin-bottom: 0.5rem; color: #666;">Company</label>
+          <input type="text" name="company" id="company" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #e9ecef; transition: border-color 0.3s;">
+          <svg class="input-icon" style="position: absolute; right: 10px; top: 38px; width: 20px; height: 20px; opacity: 0.5;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="#4263eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9 22V12H15V22" stroke="#4263eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        
+        <div style="position: relative;">
+          <label for="subject" style="display: block; margin-bottom: 0.5rem; color: #666;">Subject</label>
+          <input type="text" name="subject" id="subject" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #e9ecef; transition: border-color 0.3s;">
+          <svg class="input-icon" style="position: absolute; right: 10px; top: 38px; width: 20px; height: 20px; opacity: 0.5;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="#4263eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M18.5 2.5C18.8978 2.10217 19.4374 1.87868 20 1.87868C20.5626 1.87868 21.1022 2.10217 21.5 2.5C21.8978 2.89782 22.1213 3.43739 22.1213 4C22.1213 4.56261 21.8978 5.10217 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z" stroke="#4263eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        
+        <div style="position: relative;">
+          <label for="message" style="display: block; margin-bottom: 0.5rem; color: #666;">Message</label>
+          <textarea name="message" id="message" rows="5" required style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #e9ecef; resize: vertical; transition: border-color 0.3s;"></textarea>
+          <svg class="input-icon" style="position: absolute; right: 10px; top: 38px; width: 20px; height: 20px; opacity: 0.5;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z" stroke="#4263eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        
+        <button type="submit" class="btn-primary" style="padding: 0.75rem; border-radius: 8px; font-weight: 600; background-color: #4263eb; color: white; border: none; cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden;">
+          <span style="position: relative; z-index: 1;">Send Message</span>
+          <svg class="btn-icon" style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22 2L11 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <animate attributeName="stroke-dasharray" from="0,80" to="80,0" dur="1s" begin="buttonHover.mouseover" fill="freeze"/>
+            </path>
+          </svg>
+        </button>
+      </form>
+    </div>
+  </section>
+ <!-- CTA Section -->
+  <section class="cta">
+    <h2>Ready to Transform Your Business Communication?</h2>
+    <p>Join thousands of satisfied customers who have revolutionized their customer interactions with NumSphere's AI-powered VoIP solutions.</p>
+    <div class="hero-buttons">
+      <button class="btn-primary">Start Free Trial</button>
+      <button class="btn-secondary">Schedule Demo</button>
+    </div>
+  </section>
+  
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-about">
+        <div class="footer-logo">
+          <div class="logo-circle">
+            <div class="logo-inner"></div>
+          </div>
+          NumSphere
+        </div>
+        <p>NumSphere combines cutting-edge VoIP technology with advanced AI to provide businesses with intelligent communication solutions that enhance customer experience and streamline operations.</p>
+        <div class="social-links">
+          <a href="#" class="social-link"></a>
+          <a href="#" class="social-link"></a>
+          <a href="#" class="social-link"></a>
+          <a href="#" class="social-link"></a>
+        </div>
+      </div>
+      
+      <div class="footer-links">
+        <h3>Product</h3>
+        <ul>
+          <li><a href="#">Features</a></li>
+          <li><a href="#">Pricing</a></li>
+          <li><a href="#">Integration</a></li>
+          <li><a href="#">API</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-links">
+        <h3>Company</h3>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Press</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-links">
+        <h3>Support</h3>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 NumSphere. All rights reserved.</p>
+    </div>
+  </footer>
   <script>
     // Simple animation for floating circles
     document.addEventListener('DOMContentLoaded', function() {
