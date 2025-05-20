@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NumSphere - Page Not Found</title>
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      line-height: 1.5;
+      color: #333;
+      overflow-x: hidden;
+      background-color: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      padding: 1.5rem 5%;
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #151515;
+      text-decoration: none;
+    }
+
+    .logo-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #4263eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+    }
+
+    .logo-inner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid white;
+      border-radius: 50%;
+    }
+
+    /* Main Content */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .error-container {
+      max-width: 700px;
+      text-align: center;
+      padding: 3rem;
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 10;
+    }
+
+    .error-code {
+      font-size: 8rem;
+      font-weight: 800;
+      background: linear-gradient(45deg, #4263eb, #7048e8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      line-height: 1;
+      margin-bottom: 1rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .error-code::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(45deg, #4263eb, #7048e8);
+      bottom: 15px;
+      left: 0;
+      opacity: 0.3;
+      border-radius: 5px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #151515;
+    }
+
+    p {
+      color: #666;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+
+    .search-container {
+      max-width: 500px;
+      margin: 0 auto 2rem;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: #4263eb;
+    }
+
+    .search-button {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: #4263eb;
+      color: white;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .button-container {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background-color: #4263eb;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #3b5bdb;
+    }
+
+    .btn-secondary {
+      background-color: white;
+      color: #4263eb;
+      border: 2px solid #4263eb;
+    }
+
+    .btn-secondary:hover {
+      background-color: #eef2ff;
+    }
+
+    /* Background Elements */
+    .bg-circle {
+      position: absolute;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #4263eb, #7048e8);
+      opacity: 0.05;
+      z-index: 1;
+    }
+
+    .bg-circle-1 {
+      top: -150px;
+      right: -150px;
+      width: 400px;
+      height: 400px;
+    }
+
+    .bg-circle-2 {
+      bottom: -100px;
+      left: -100px;
+      width: 300px;
+      height: 300px;
+    }
+
+    /* Suggested Links */
+    .suggested-links {
+      background-color: #eef2ff;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-top: 2rem;
+      text-align: left;
+    }
+
+    .suggested-links h3 {
+      color: #151515;
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+    }
+
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+
+    .link-item {
+      display: flex;
+      align-items: center;
+    }
+
+    .link-item a {
+      color: #4263eb;
+      text-decoration: none;
+      padding: 0.5rem;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .link-item a:hover {
+      color: #3b5bdb;
+      text-decoration: underline;
+    }
+
+    .link-icon {
+      margin-right: 8px;
+      color: #4263eb;
+    }
+
+    /* Footer */
+    footer {
+      padding: 1.5rem;
+      text-align: center;
+      color: #666;
+      font-size: 0.9rem;
+      background-color: white;
+      border-top: 1px solid #eee;
+    }
+
+    /* Media Queries */
+    @media (max-width: 768px) {
+      .error-container {
+        padding: 2rem 1.5rem;
+      }
+      
+      .error-code {
+        font-size: 6rem;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .links-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .button-container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/" class="logo">
+      <div class="logo-circle">
+        <div class="logo-inner"></div>
+      </div>
+      NumSphere
+    </a>
+  </header>
+  
+  <main>
+    <div class="bg-circle bg-circle-1"></div>
+    <div class="bg-circle bg-circle-2"></div>
+    
+    <div class="error-container">
+      <div class="error-code">404</div>
+      <h1>Page Not Found</h1>
+      <p>We couldn't find the page you were looking for. It might have been moved, deleted, or never existed.</p>
+      
+      <div class="search-container">
+        <input type="text" class="search-input" placeholder="Search NumSphere" aria-label="Search">
+        <button class="search-button">
+          🔍
+        </button>
+      </div>
+      
+      <div class="button-container">
+        <a href="/" class="btn btn-primary">Go to Homepage</a>
+        <a href="/support" class="btn btn-secondary">Contact Support</a>
+      </div>
+      
+      <div class="suggested-links">
+        <h3>You might be looking for:</h3>
+        <div class="links-grid">
+          <div class="link-item">
+            <span class="link-icon">📱</span>
+            <a href="/features">Features</a>
+          </div>
+          <div class="link-item">
+            <span class="link-icon">💰</span>
+            <a href="/pricing">Pricing</a>
+          </div>
+          <div class="link-item">
+            <span class="link-icon">🔧</span>
+            <a href="/how-it-works">How It Works</a>
+          </div>
+          <div class="link-item">
+            <span class="link-icon">💬</span>
+            <a href="/testimonials">Testimonials</a>
+          </div>
+          <div class="link-item">
+            <span class="link-icon">🔐</span>
+            <a href="/login">Login</a>
+          </div>
+          <div class="link-item">
+            <span class="link-icon">📊</span>
+            <a href="/dashboard">Dashboard</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <footer>
+    <p>&copy; 2025 NumSphere. All rights reserved.</p>
+  </footer>
+  
+  <script>
+    // Form submission handling
+    document.querySelector('.search-container').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const searchTerm = document.querySelector('.search-input').value.trim();
+      if (searchTerm) {
+        window.location.href = `/search?q=${encodeURIComponent(searchTerm)}`;
+      }
+    });
+    
+    document.querySelector('.search-button').addEventListener('click', function() {
+      const searchTerm = document.querySelector('.search-input').value.trim();
+      if (searchTerm) {
+        window.location.href = `/search?q=${encodeURIComponent(searchTerm)}`;
+      }
+    });
+  </script>
+</body>
+</html>
