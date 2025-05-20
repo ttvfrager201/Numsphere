@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NumSphere - Under Maintenance</title>
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      line-height: 1.5;
+      color: #333;
+      overflow-x: hidden;
+      background-color: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      padding: 1.5rem 5%;
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #151515;
+      text-decoration: none;
+    }
+
+    .logo-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #4263eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+    }
+
+    .logo-inner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid white;
+      border-radius: 50%;
+    }
+
+    /* Main Content */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .maintenance-container {
+      max-width: 700px;
+      text-align: center;
+      padding: 3rem;
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 10;
+    }
+
+    .icon-container {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #4263eb, #7048e8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+
+    .gear-icon {
+      color: white;
+      font-size: 2.5rem;
+      animation: spin 8s linear infinite;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #151515;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: #4263eb;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+    }
+
+    p {
+      color: #666;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+
+    .countdown {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #4263eb;
+      margin-bottom: 2rem;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .social-link {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #eef2ff;
+      color: #4263eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      font-size: 1.2rem;
+      text-decoration: none;
+    }
+
+    .social-link:hover {
+      background-color: #4263eb;
+      color: white;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background-color: #4263eb;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #3b5bdb;
+    }
+
+    /* Background Elements */
+    .bg-circle {
+      position: absolute;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #4263eb, #7048e8);
+      opacity: 0.05;
+      z-index: 1;
+    }
+
+    .bg-circle-1 {
+      top: -150px;
+      right: -150px;
+      width: 400px;
+      height: 400px;
+    }
+
+    .bg-circle-2 {
+      bottom: -100px;
+      left: -100px;
+      width: 300px;
+      height: 300px;
+    }
+
+    /* Footer */
+    footer {
+      padding: 1.5rem;
+      text-align: center;
+      color: #666;
+      font-size: 0.9rem;
+      background-color: white;
+      border-top: 1px solid #eee;
+    }
+
+    /* Animations */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0); }
+    }
+
+    /* Media Queries */
+    @media (max-width: 768px) {
+      .maintenance-container {
+        padding: 2rem 1.5rem;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .icon-container {
+        width: 80px;
+        height: 80px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/" class="logo">
+      <div class="logo-circle">
+        <div class="logo-inner"></div>
+      </div>
+      NumSphere
+    </a>
+  </header>
+  
+  <main>
+    <div class="bg-circle bg-circle-1"></div>
+    <div class="bg-circle bg-circle-2"></div>
+    
+    <div class="maintenance-container">
+      <div class="icon-container">
+        <div class="gear-icon">⚙️</div>
+      </div>
+      <h1>We're Improving NumSphere</h1>
+      <div class="subtitle">Scheduled Maintenance in Progress</div>
+      <p>We're currently performing some scheduled maintenance and upgrades to improve your experience. Our team is working hard to bring everything back online as quickly as possible.</p>
+      
+      <div class="countdown" id="countdown">
+        Estimated completion in:
+        <span id="time">02:00:00</span>
+      </div>
+      
+      <div class="social-links">
+        <a href="#" class="social-link">
+          <span>📱</span>
+        </a>
+        <a href="#" class="social-link">
+          <span>📧</span>
+        </a>
+        <a href="#" class="social-link">
+          <span>🐦</span>
+        </a>
+        <a href="#" class="social-link">
+          <span>📘</span>
+        </a>
+      </div>
+      
+      <p>Need immediate assistance? Please contact our support team.</p>
+      <a href="mailto:support@numsphere.online" class="btn btn-primary">Contact Support</a>
+    </div>
+  </main>
+  
+  <footer>
+    <p>&copy; 2025 NumSphere. All rights reserved.</p>
+  </footer>
+  
+  <script>
+    // Countdown Timer
+    function startCountdown() {
+      let hours = 2;
+      let minutes = 0;
+      let seconds = 0;
+      
+      const timeElement = document.getElementById('time');
+      
+      const interval = setInterval(function() {
+        if (hours === 0 && minutes === 0 && seconds === 0) {
+          clearInterval(interval);
+          window.location.href = "/"; // Redirect to homepage when countdown ends
+          return;
+        }
+        
+        if (seconds === 0) {
+          if (minutes === 0) {
+            hours--;
+            minutes = 59;
+          } else {
+            minutes--;
+          }
+          seconds = 59;
+        } else {
+          seconds--;
+        }
+        
+        timeElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+    
+    document.addEventListener('DOMContentLoaded', startCountdown);
+  </script>
+</body>
+</html>
