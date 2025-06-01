@@ -68,20 +68,23 @@
       font-weight: 500;
     }
 
-    .get-started {
-      background-color: #4263eb;
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
+   .get-started {
+  background-color: #4263eb;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: inline-block; /* Required for padding to work on <a> */
+  text-decoration: none; /* Removes underline */
+  text-align: center; /* Ensures text stays centered like a button */
+}
 
-    .get-started:hover {
-      background-color: #3b5bdb;
-    }
+.get-started:hover {
+  background-color: #3b5bdb;
+}
 
     /* Hero Section */
     .hero {
@@ -897,7 +900,7 @@
       <a href="#">Pricing</a>
       <a href="#">Testimonials</a>
     </div>
-    <button class="get-started"><a href="">Login</a></button>
+    <a href="Login.html">Login</a>
   </nav>
   
   <!-- Hero Section -->
