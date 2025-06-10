@@ -228,9 +228,13 @@
     
     <button type="button" class="secondary-btn" onclick="window.location.href='index.html">Back to Home</button>
   </div>
+
 <script>
 // Configuration
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzk5CKAA7oDc72TSrVIUASRAfxB5JY6kk1FMkfdTxGsc8zKbQuH2p83FMubZt1KtPMX/exec'; // Replace with your deployed script URL
+
+// Enable debug mode (set to false in production)
+const DEBUG_MODE = true;
 
 // Show alert function
 function showAlert(message, type = 'error') {
@@ -249,6 +253,17 @@ function showAlert(message, type = 'error') {
   }
 }
 
+// Debug function
+function debugLog(message) {
+  if (DEBUG_MODE) {
+    console.log('DEBUG:', message);
+    const debugInfo = document.getElementById('debugInfo');
+    const debugText = document.getElementById('debugText');
+    debugInfo.style.display = 'block';
+    debugText.innerHTML += message + '<br>';
+  }
+}
+
 // Show loading state
 function setLoading(isLoading) {
   const loginBtn = document.getElementById('loginBtn');
@@ -257,38 +272,41 @@ function setLoading(isLoading) {
   if (isLoading) {
     loginBtn.disabled = true;
     loadingSpinner.classList.add('show');
-    loginBtn.textContent = 'Signing In...';
+    loginBtn.innerHTML = 'Signing In... <span class="loading show"><span class="spinner"></span></span>';
   } else {
     loginBtn.disabled = false;
     loadingSpinner.classList.remove('show');
-    loginBtn.textContent = 'Sign In';
+    loginBtn.innerHTML = 'Sign In <span class="loading" id="loadingSpinner"><span class="spinner"></span></span>';
   }
 }
 
-// Hash password function (simple client-side hashing - matches server-side)
-function hashPassword(password) {
-  // Simple hash function - in production use bcrypt
-  return btoa(password + 'numsphere_salt');
-}
-
-// Login function
+// Login function - FIXED VERSION
 async function loginUser(email, password) {
   try {
     setLoading(true);
+    debugLog(`Attempting login for: ${email}`);
+    debugLog(`Password length: ${password.length}`);
+    
+    const requestData = {
+      action: 'login',
+      email: email,
+      password: password // Send password as-is, let server handle hashing
+    };
+    
+    debugLog(`Request data: ${JSON.stringify(requestData)}`);
     
     const response = await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        action: 'login',
-        email: email,
-        password: password
-      })
+      body: JSON.stringify(requestData)
     });
     
+    debugLog(`Response status: ${response.status}`);
+    
     const result = await response.json();
+    debugLog(`Server response: ${JSON.stringify(result)}`);
     
     if (result.success) {
       // Store user session
@@ -301,20 +319,24 @@ async function loginUser(email, password) {
       
       // Check if user needs to change password
       if (result.needsPasswordChange) {
+        debugLog('User needs to change password - redirecting to change password page');
         setTimeout(() => {
           window.location.href = 'ChangePassword.html';
         }, 1500);
       } else {
+        debugLog('Login complete - redirecting to dashboard');
         setTimeout(() => {
           window.location.href = 'dashboard.html';
         }, 1500);
       }
     } else {
       showAlert(result.message || 'Login failed. Please check your credentials.');
+      debugLog(`Login failed: ${result.message}`);
     }
     
   } catch (error) {
     console.error('Login error:', error);
+    debugLog(`Login error: ${error.message}`);
     showAlert('Login failed. Please try again later.');
   } finally {
     setLoading(false);
@@ -328,6 +350,11 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
   
+  // Clear previous debug info
+  if (DEBUG_MODE) {
+    document.getElementById('debugText').innerHTML = '';
+  }
+  
   // Basic validation
   if (!email || !password) {
     showAlert('Please enter both email and password.');
@@ -338,6 +365,8 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     showAlert('Please enter a valid email address.');
     return;
   }
+  
+  debugLog('Form validation passed');
   
   // Attempt login
   loginUser(email, password);
