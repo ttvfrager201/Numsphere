@@ -228,10 +228,10 @@
 
     <button type="button" class="secondary-btn" onclick="goHome()">Back to Home</button>
   </div>
+
 <script>
-// Configuration
-const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL'; // Replace with your deployed script URL
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzk5CKAA7oDc72TSrVIUASRAfxB5JY6kk1FMkfdTxGsc8zKbQuH2p83FMubZt1KtPMX/exec'; // Replace with your deployed script URL
+// Configuration - FIXED: Removed duplicate declaration
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzk5CKAA7oDc72TSrVIUASRAfxB5JY6kk1FMkfdTxGsc8zKbQuH2p83FMubZt1KtPMX/exec';
 
 // Show alert function
 function showAlert(message, type = 'error') {
@@ -258,27 +258,22 @@ function setLoading(isLoading) {
   if (isLoading) {
     loginBtn.disabled = true;
     loadingSpinner.classList.add('show');
-    loginBtn.textContent = 'Signing In...';
+    loginBtn.innerHTML = 'Signing In... <span class="loading show"><span class="spinner"></span></span>';
   } else {
     loginBtn.disabled = false;
     loadingSpinner.classList.remove('show');
-    loginBtn.textContent = 'Sign In';
+    loginBtn.innerHTML = 'Sign In <span class="loading" id="loadingSpinner"><span class="spinner"></span></span>';
   }
 }
 
-// Hash password function (simple client-side hashing - matches server-side)
-function hashPassword(password) {
-  // Simple hash function - in production use bcrypt
-  return btoa(password + 'numsphere_salt');
-}
-
-// Login function
+// Login function - FIXED: Improved error handling and CORS
 async function loginUser(email, password) {
   try {
     setLoading(true);
 
     const response = await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
+      mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -289,14 +284,18 @@ async function loginUser(email, password) {
       })
     });
 
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
     const result = await response.json();
 
     if (result.success) {
       // Store user session
       sessionStorage.setItem('userEmail', email);
       sessionStorage.setItem('userLoggedIn', 'true');
-      sessionStorage.setItem('userName', result.userName);
-      sessionStorage.setItem('userPhone', result.userPhone);
+      sessionStorage.setItem('userName', result.userName || '');
+      sessionStorage.setItem('userPhone', result.userPhone || '');
 
       showAlert('Login successful! Redirecting...', 'success');
 
@@ -316,7 +315,11 @@ async function loginUser(email, password) {
 
   } catch (error) {
     console.error('Login error:', error);
-    showAlert('Login failed. Please try again later.');
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      showAlert('Connection error. Please check your internet connection and try again.');
+    } else {
+      showAlert('Login failed. Please try again later.');
+    }
   } finally {
     setLoading(false);
   }
@@ -343,6 +346,11 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
   // Attempt login
   loginUser(email, password);
 });
+
+// FIXED: Added missing goHome function
+function goHome() {
+  window.location.href = 'index.html';
+}
 
 // Check if user is already logged in
 document.addEventListener('DOMContentLoaded', function() {
