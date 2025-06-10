@@ -229,10 +229,132 @@
     <button type="button" class="secondary-btn" onclick="goHome()">Back to Home</button>
   </div>
 
-  <script>
-  function goHome() {
-    window.location.href = 'index.html';
+// Login Page Backend - Add this script to Login.html before closing </body> tag
+
+<script>
+// Configuration
+const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL'; // Replace with your deployed script URL
+
+// Show alert function
+function showAlert(message, type = 'error') {
+  const alertContainer = document.getElementById('alertContainer');
+  alertContainer.innerHTML = `
+    <div class="alert alert-${type}">
+      ${message}
+    </div>
+  `;
+  
+  // Auto-hide success messages after 5 seconds
+  if (type === 'success') {
+    setTimeout(() => {
+      alertContainer.innerHTML = '';
+    }, 5000);
   }
+}
+
+// Show loading state
+function setLoading(isLoading) {
+  const loginBtn = document.getElementById('loginBtn');
+  const loadingSpinner = document.getElementById('loadingSpinner');
+  
+  if (isLoading) {
+    loginBtn.disabled = true;
+    loadingSpinner.classList.add('show');
+    loginBtn.textContent = 'Signing In...';
+  } else {
+    loginBtn.disabled = false;
+    loadingSpinner.classList.remove('show');
+    loginBtn.textContent = 'Sign In';
+  }
+}
+
+// Hash password function (simple client-side hashing - matches server-side)
+function hashPassword(password) {
+  // Simple hash function - in production use bcrypt
+  return btoa(password + 'numsphere_salt');
+}
+
+// Login function
+async function loginUser(email, password) {
+  try {
+    setLoading(true);
+    
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        action: 'login',
+        email: email,
+        password: password
+      })
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      // Store user session
+      sessionStorage.setItem('userEmail', email);
+      sessionStorage.setItem('userLoggedIn', 'true');
+      sessionStorage.setItem('userName', result.userName);
+      sessionStorage.setItem('userPhone', result.userPhone);
+      
+      showAlert('Login successful! Redirecting...', 'success');
+      
+      // Check if user needs to change password
+      if (result.needsPasswordChange) {
+        setTimeout(() => {
+          window.location.href = 'ChangePassword.html';
+        }, 1500);
+      } else {
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 1500);
+      }
+    } else {
+      showAlert(result.message || 'Login failed. Please check your credentials.');
+    }
+    
+  } catch (error) {
+    console.error('Login error:', error);
+    showAlert('Login failed. Please try again later.');
+  } finally {
+    setLoading(false);
+  }
+}
+
+// Form submission handler
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  
+  // Basic validation
+  if (!email || !password) {
+    showAlert('Please enter both email and password.');
+    return;
+  }
+  
+  if (!email.includes('@')) {
+    showAlert('Please enter a valid email address.');
+    return;
+  }
+  
+  // Attempt login
+  loginUser(email, password);
+});
+
+// Check if user is already logged in
+document.addEventListener('DOMContentLoaded', function() {
+  if (sessionStorage.getItem('userLoggedIn') === 'true') {
+    showAlert('You are already logged in. Redirecting...', 'info');
+    setTimeout(() => {
+      window.location.href = 'dashboard.html';
+    }, 2000);
+  }
+});
 </script>
 </body>
 </html>
