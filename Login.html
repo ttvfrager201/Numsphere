@@ -230,136 +230,114 @@
   </div>
 
 <script>
-// Configuration - FIXED: Removed duplicate declaration
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzk5CKAA7oDc72TSrVIUASRAfxB5JY6kk1FMkfdTxGsc8zKbQuH2p83FMubZt1KtPMX/exec';
+// Configuration
+const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzk5CKAA7oDc72TSrVIUASRAfxB5JY6kk1FMkfdTxGsc8zKbQuH2p83FMubZt1KtPMX/exec';
 
-// Show alert function
-function showAlert(message, type = 'error') {
-  const alertContainer = document.getElementById('alertContainer');
-  alertContainer.innerHTML = `
-    <div class="alert alert-${type}">
-      ${message}
-    </div>
-  `;
-
-  // Auto-hide success messages after 5 seconds
-  if (type === 'success') {
-    setTimeout(() => {
-      alertContainer.innerHTML = '';
-    }, 5000);
-  }
-}
-
-// Show loading state
-function setLoading(isLoading) {
-  const loginBtn = document.getElementById('loginBtn');
-  const loadingSpinner = document.getElementById('loadingSpinner');
-
-  if (isLoading) {
-    loginBtn.disabled = true;
-    loadingSpinner.classList.add('show');
-    loginBtn.innerHTML = 'Signing In... <span class="loading show"><span class="spinner"></span></span>';
-  } else {
-    loginBtn.disabled = false;
-    loadingSpinner.classList.remove('show');
-    loginBtn.innerHTML = 'Sign In <span class="loading" id="loadingSpinner"><span class="spinner"></span></span>';
-  }
-}
-
-// Login function - FIXED: Improved error handling and CORS
-async function loginUser(email, password) {
-  try {
-    setLoading(true);
-
-    const response = await fetch(GOOGLE_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        action: 'login',
-        email: email,
-        password: password
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const result = await response.json();
-
-    if (result.success) {
-      // Store user session
-      sessionStorage.setItem('userEmail', email);
-      sessionStorage.setItem('userLoggedIn', 'true');
-      sessionStorage.setItem('userName', result.userName || '');
-      sessionStorage.setItem('userPhone', result.userPhone || '');
-
-      showAlert('Login successful! Redirecting...', 'success');
-
-      // Check if user needs to change password
-      if (result.needsPasswordChange) {
-        setTimeout(() => {
-          window.location.href = 'ChangePassword.html';
-        }, 1500);
-      } else {
-        setTimeout(() => {
-          window.location.href = 'dashboard.html';
-        }, 1500);
-      }
-    } else {
-      showAlert(result.message || 'Login failed. Please check your credentials.');
-    }
-
-  } catch (error) {
-    console.error('Login error:', error);
-    if (error.name === 'TypeError' && error.message.includes('fetch')) {
-      showAlert('Connection error. Please check your internet connection and try again.');
-    } else {
-      showAlert('Login failed. Please try again later.');
-    }
-  } finally {
-    setLoading(false);
-  }
-}
-
-// Form submission handler
-document.getElementById('loginForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value;
-
-  // Basic validation
-  if (!email || !password) {
-    showAlert('Please enter both email and password.');
-    return;
-  }
-
-  if (!email.includes('@')) {
-    showAlert('Please enter a valid email address.');
-    return;
-  }
-
-  // Attempt login
-  loginUser(email, password);
-});
-
-// FIXED: Added missing goHome function
-function goHome() {
-  window.location.href = 'index.html';
-}
-
-// Check if user is already logged in
 document.addEventListener('DOMContentLoaded', function() {
-  if (sessionStorage.getItem('userLoggedIn') === 'true') {
-    showAlert('You are already logged in. Redirecting...', 'info');
-    setTimeout(() => {
-      window.location.href = 'dashboard.html';
-    }, 2000);
-  }
+    const loginForm = document.getElementById('loginForm');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const loginBtn = document.getElementById('loginBtn');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const alertContainer = document.getElementById('alertContainer');
+
+    // Handle form submission
+    loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
+        
+        // Validate inputs
+        if (!email || !password) {
+            showAlert('Please enter both email and password', 'error');
+            return;
+        }
+        
+        // Show loading state
+        setLoadingState(true);
+        
+        try {
+            // Call Google Apps Script for authentication
+            const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'login',
+                    email: email,
+                    password: password
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                if (result.requiresPasswordChange) {
+                    // Store user info for password change
+                    sessionStorage.setItem('userEmail', email);
+                    sessionStorage.setItem('tempLogin', 'true');
+                    
+                    showAlert('Login successful! You must change your temporary password.', 'success');
+                    
+                    // Redirect to change password page after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'ChangePassword.html';
+                    }, 2000);
+                } else {
+                    // Regular login - go to dashboard
+                    sessionStorage.setItem('userEmail', email);
+                    sessionStorage.setItem('isAuthenticated', 'true');
+                    
+                    showAlert('Login successful! Redirecting to dashboard...', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+                }
+            } else {
+                showAlert(result.message || 'Login failed. Please check your credentials.', 'error');
+            }
+            
+        } catch (error) {
+            console.error('Login error:', error);
+            showAlert('Login failed. Please try again or contact support.', 'error');
+        } finally {
+            setLoadingState(false);
+        }
+    });
+    
+    // Show alert message
+    function showAlert(message, type) {
+        alertContainer.innerHTML = `
+            <div class="alert alert-${type}">
+                ${message}
+            </div>
+        `;
+        
+        // Auto-hide success messages
+        if (type === 'success') {
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+    }
+    
+    // Set loading state
+    function setLoadingState(isLoading) {
+        if (isLoading) {
+            loginBtn.disabled = true;
+            loadingSpinner.classList.add('show');
+        } else {
+            loginBtn.disabled = false;
+            loadingSpinner.classList.remove('show');
+        }
+    }
+    
+    // Clear any existing alerts on input focus
+    emailInput.addEventListener('focus', () => alertContainer.innerHTML = '');
+    passwordInput.addEventListener('focus', () => alertContainer.innerHTML = '');
 });
 </script>
 </body>
