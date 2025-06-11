@@ -222,15 +222,13 @@
   </div>
 
 <script>
-// Configuration - UPDATED WITH PROPER WEB APP URL
 const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyRAUhhlEXDuL6GcvfmwBpSSTeL_3DpZyqtDbF8ysNynFGjWM1AHer48LL4Tl2nRwS7/exec';
 
-// Function to navigate back to home - ADDED MISSING FUNCTION
 function goHome() {
     window.location.href = 'index.html';
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const loginForm = document.getElementById('loginForm');
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
@@ -238,73 +236,59 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadingSpinner = document.getElementById('loadingSpinner');
     const alertContainer = document.getElementById('alertContainer');
 
-    // Handle form submission with improved error handling
-    loginForm.addEventListener('submit', async function(e) {
+    loginForm.addEventListener('submit', async function (e) {
         e.preventDefault();
-        
+
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
-        
-        // Validate inputs
+
         if (!email || !password) {
             showAlert('Please enter both email and password', 'error');
             return;
         }
-        
-        // Show loading state
+
         setLoadingState(true);
-        
+
         try {
             console.log('Attempting login for:', email);
-            
-            // Call Google Apps Script for authentication with improved fetch options
+
             const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                mode: 'cors', // Explicitly set CORS mode
-                credentials: 'omit', // Don't send credentials
-                body: JSON.stringify({
+                body: new URLSearchParams({
                     action: 'login',
                     email: email,
                     password: password
                 })
             });
-            
-            console.log('Response status:', response.status);
-            console.log('Response ok:', response.ok);
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const result = await response.json();
             console.log('Login result:', result);
-            
+
             if (result.success) {
                 if (result.needsPasswordChange) {
-                    // Store user info for password change
                     sessionStorage.setItem('userEmail', email);
                     sessionStorage.setItem('tempLogin', 'true');
                     sessionStorage.setItem('userName', result.userName || '');
-                    
+
                     showAlert('Login successful! You must change your temporary password.', 'success');
-                    
-                    // Redirect to change password page after 2 seconds
                     setTimeout(() => {
                         window.location.href = 'ChangePassword.html';
                     }, 2000);
                 } else {
-                    // Regular login - go to dashboard
                     sessionStorage.setItem('userEmail', email);
                     sessionStorage.setItem('isAuthenticated', 'true');
                     sessionStorage.setItem('userName', result.userName || '');
                     sessionStorage.setItem('userPhone', result.userPhone || '');
                     sessionStorage.setItem('userPlan', result.userPlan || '');
-                    
+
                     showAlert('Login successful! Redirecting to dashboard...', 'success');
-                    
                     setTimeout(() => {
                         window.location.href = 'dashboard.html';
                     }, 1500);
@@ -312,78 +296,52 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 showAlert(result.message || 'Login failed. Please check your credentials.', 'error');
             }
-            
         } catch (error) {
             console.error('Login error:', error);
-            
-            // Handle specific error types
-            if (error.name === 'TypeError' && error.message.includes('fetch')) {
-                showAlert('Connection error. Please check your internet connection and try again.', 'error');
-            } else if (error.message.includes('CORS')) {
-                showAlert('Configuration error. Please contact support if this continues.', 'error');
-            } else if (error.message.includes('HTTP error')) {
-                showAlert('Server error. Please try again in a moment.', 'error');
-            } else {
-                showAlert('Login failed. Please try again or contact support if the problem persists.', 'error');
-            }
+            showAlert('Login failed. Please try again or contact support if the problem persists.', 'error');
         } finally {
             setLoadingState(false);
         }
     });
-    
-    // Show alert message
+
     function showAlert(message, type) {
         alertContainer.innerHTML = `
             <div class="alert alert-${type}">
                 ${message}
             </div>
         `;
-        
-        // Auto-hide success messages
+
         if (type === 'success') {
             setTimeout(() => {
                 alertContainer.innerHTML = '';
             }, 5000);
         }
     }
-    
-    // Set loading state
+
     function setLoadingState(isLoading) {
-        if (isLoading) {
-            loginBtn.disabled = true;
-            loadingSpinner.classList.add('show');
-        } else {
-            loginBtn.disabled = false;
-            loadingSpinner.classList.remove('show');
-        }
+        loginBtn.disabled = isLoading;
+        loadingSpinner.classList.toggle('show', isLoading);
     }
-    
-    // Clear any existing alerts on input focus
+
     emailInput.addEventListener('focus', () => alertContainer.innerHTML = '');
     passwordInput.addEventListener('focus', () => alertContainer.innerHTML = '');
-    
-    // Add input validation
-    emailInput.addEventListener('input', function() {
+
+    emailInput.addEventListener('input', function () {
         const email = this.value.trim();
-        if (email && !isValidEmail(email)) {
-            this.style.borderColor = '#dc3545';
-        } else {
-            this.style.borderColor = '#ccc';
-        }
+        this.style.borderColor = email && !isValidEmail(email) ? '#dc3545' : '#ccc';
     });
-    
-    // Email validation helper
+
     function isValidEmail(email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     }
 });
 
-// Add error handling for unhandled promise rejections
-window.addEventListener('unhandledrejection', function(event) {
+window.addEventListener('unhandledrejection', function (event) {
     console.error('Unhandled promise rejection:', event.reason);
     event.preventDefault();
 });
 </script>
+
 </body>
 </html>
