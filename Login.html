@@ -279,7 +279,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     showAlert('Login successful! You must change your temporary password.', 'success');
                     setTimeout(() => {
-                        window.location.href = 'ChangePassword.html';
+                        window.location.href = 'ResetPassword.html';
                     }, 2000);
                 } else {
                     sessionStorage.setItem('userEmail', email);
