@@ -247,6 +247,11 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        if (!isValidEmail(email)) {
+            showAlert('Please enter a valid email address', 'error');
+            return;
+        }
+
         setLoadingState(true);
 
         try {
@@ -272,22 +277,25 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('Login result:', result);
 
             if (result.success) {
-                if (result.needsPasswordChange) {
-                    sessionStorage.setItem('userEmail', email);
-                    sessionStorage.setItem('tempLogin', 'true');
-                    sessionStorage.setItem('userName', result.userName || '');
+                // Store user data
+                sessionStorage.setItem('userEmail', email);
+                sessionStorage.setItem('isAuthenticated', 'true');
+                
+                if (result.user) {
+                    sessionStorage.setItem('userName', result.user.fullName || '');
+                    sessionStorage.setItem('userPhone', result.user.assignedNumber || '');
+                    sessionStorage.setItem('userPlan', result.user.plan || '');
+                }
 
-                    showAlert('Login successful! You must change your temporary password.', 'success');
+                if (result.requirePasswordChange) {
+                    // User needs to change password (temporary password)
+                    sessionStorage.setItem('tempLogin', 'true');
+                    showAlert('Login successful! You must change your temporary password.', 'info');
                     setTimeout(() => {
                         window.location.href = 'ResetPassword.html';
                     }, 2000);
                 } else {
-                    sessionStorage.setItem('userEmail', email);
-                    sessionStorage.setItem('isAuthenticated', 'true');
-                    sessionStorage.setItem('userName', result.userName || '');
-                    sessionStorage.setItem('userPhone', result.userPhone || '');
-                    sessionStorage.setItem('userPlan', result.userPlan || '');
-
+                    // Normal login - redirect to dashboard
                     showAlert('Login successful! Redirecting to dashboard...', 'success');
                     setTimeout(() => {
                         window.location.href = 'dashboard.html';
@@ -311,7 +319,8 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
         `;
 
-        if (type === 'success') {
+        // Auto-clear success and info messages
+        if (type === 'success' || type === 'info') {
             setTimeout(() => {
                 alertContainer.innerHTML = '';
             }, 5000);
@@ -321,25 +330,58 @@ document.addEventListener('DOMContentLoaded', function () {
     function setLoadingState(isLoading) {
         loginBtn.disabled = isLoading;
         loadingSpinner.classList.toggle('show', isLoading);
+        
+        if (isLoading) {
+            loginBtn.style.opacity = '0.7';
+        } else {
+            loginBtn.style.opacity = '1';
+        }
     }
 
+    // Clear alerts when user focuses on inputs
     emailInput.addEventListener('focus', () => alertContainer.innerHTML = '');
     passwordInput.addEventListener('focus', () => alertContainer.innerHTML = '');
 
+    // Real-time email validation
     emailInput.addEventListener('input', function () {
         const email = this.value.trim();
-        this.style.borderColor = email && !isValidEmail(email) ? '#dc3545' : '#ccc';
+        if (email && !isValidEmail(email)) {
+            this.style.borderColor = '#dc3545';
+        } else {
+            this.style.borderColor = '#ccc';
+        }
     });
 
     function isValidEmail(email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     }
+
+    // Handle Enter key press in password field
+    passwordInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            loginForm.dispatchEvent(new Event('submit'));
+        }
+    });
 });
 
+// Global error handler
 window.addEventListener('unhandledrejection', function (event) {
     console.error('Unhandled promise rejection:', event.reason);
     event.preventDefault();
+});
+
+// Prevent form submission on page load
+window.addEventListener('load', function () {
+    const form = document.getElementById('loginForm');
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            if (!e.target.checkValidity()) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        });
+    }
 });
 </script>
 
