@@ -157,6 +157,15 @@
         return true;
       }
 
+      // Force re-check when navigating back
+      window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+          if (!checkAuthentication()) {
+            window.location.reload();
+          }
+        }
+      });
+
       // Display user information
       function displayUserInfo() {
         const userName = sessionStorage.getItem('userName') || 'Unknown User';
