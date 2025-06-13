@@ -123,6 +123,22 @@
         transform: translateY(-20px);
       }
     }
+    .banner {
+      position: fixed;
+      top: -100px;
+      left: 0;
+      width: 100%;
+      background-color: #f44336;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      transition: top 0.5s ease;
+      z-index: 1000;
+    }
+    .banner.show {
+      top: 0;
+    }
   </style>
   <script>
     (function() {
@@ -134,8 +150,8 @@
         const userEmail = sessionStorage.getItem('userEmail');
 
         if (!userLoggedIn || userLoggedIn !== 'true' || !userEmail) {
-          alert('Access denied. Please log in.');
-          window.location.href = 'Login.html';
+          showBanner('Access denied. Please log in.');
+          setTimeout(() => window.location.href = 'Login.html', 2000);
           return false;
         }
         return true;
@@ -155,8 +171,16 @@
       // Logout user
       function logoutUser() {
         sessionStorage.clear();
-        alert('You have been logged out.');
-        window.location.href = 'Login.html';
+        showBanner('You have been logged out.');
+        setTimeout(() => window.location.href = 'Login.html', 2000);
+      }
+
+      // Show banner
+      function showBanner(message) {
+        const banner = document.getElementById('banner');
+        banner.textContent = message;
+        banner.classList.add('show');
+        setTimeout(() => banner.classList.remove('show'), 4000);
       }
 
       document.addEventListener('DOMContentLoaded', function() {
@@ -175,6 +199,7 @@
     <div class="circle"></div>
     <div class="circle"></div>
   </div>
+  <div id="banner" class="banner"></div>
   <div class="dashboard-container">
     <a href="index.html" class="logo">
       <div class="logo-circle">
