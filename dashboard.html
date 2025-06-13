@@ -1,110 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>
-// Check authentication before page loads
-(function() {
-  'use strict';
-  
-  // Check if user is logged in
-  function checkAuthentication() {
-    const userLoggedIn = sessionStorage.getItem('userLoggedIn');
-    const userEmail = sessionStorage.getItem('userEmail');
-    
-    if (!userLoggedIn || userLoggedIn !== 'true' || !userEmail) {
-      // User not logged in, redirect to login
-      alert('Please login to access the dashboard.');
-      window.location.href = 'Login.html';
-      return false;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #f4f4f4;
     }
-    
-    return true;
-  }
-  
-  // Check if user completed password change (if it was required)
-  function checkPasswordChange() {
-    const passwordChanged = sessionStorage.getItem('passwordChanged');
-    const userEmail = sessionStorage.getItem('userEmail');
-    
-    // If user logged in but hasn't changed password when required
-    if (userEmail && (!passwordChanged || passwordChanged !== 'true')) {
-      // Check if they need to change password by calling the server
-      // For now, assume they're good if they reached dashboard
-      sessionStorage.setItem('passwordChanged', 'true');
+    .dashboard {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 600px;
+      width: 100%;
     }
-  }
-  
-  // Initialize dashboard security
-  function initDashboardSecurity() {
-    if (!checkAuthentication()) {
-      return; // Will redirect to login
+    h1 {
+      color: #333;
+      margin-bottom: 1rem;
     }
-    
-    checkPasswordChange();
-    
-    // Display user info
-    const userName = sessionStorage.getItem('userName');
-    const userPhone = sessionStorage.getItem('userPhone');
-    
-    console.log('✅ Dashboard access granted for:', userName);
-    
-    // You can set user info in dashboard elements here
-    document.addEventListener('DOMContentLoaded', function() {
-      // Update dashboard with user info
-      const userNameElements = document.querySelectorAll('.user-name');
-      const userPhoneElements = document.querySelectorAll('.user-phone');
-      
-      userNameElements.forEach(el => {
-        if (userName) el.textContent = userName;
+    .user-info {
+      margin-bottom: 2rem;
+    }
+    .user-info p {
+      margin: 0.5rem 0;
+    }
+    button {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #4263eb;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background-color: #2f4bcf;
+    }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  </style>
+  <script>
+    (function() {
+      'use strict';
+
+      // Authentication check
+      function checkAuthentication() {
+        const userLoggedIn = sessionStorage.getItem('isAuthenticated');
+        const userEmail = sessionStorage.getItem('userEmail');
+
+        if (!userLoggedIn || userLoggedIn !== 'true' || !userEmail) {
+          alert('Access denied. Please log in.');
+          window.location.href = 'Login.html';
+          return false;
+        }
+        return true;
+      }
+
+      // Display user information
+      function displayUserInfo() {
+        const userName = sessionStorage.getItem('userName') || 'Unknown User';
+        const userEmail = sessionStorage.getItem('userEmail') || 'Not Provided';
+        const userPhone = sessionStorage.getItem('userPhone') || 'Not Provided';
+
+        document.getElementById('userName').textContent = userName;
+        document.getElementById('userEmail').textContent = userEmail;
+        document.getElementById('userPhone').textContent = userPhone;
+      }
+
+      // Logout user
+      function logoutUser() {
+        if (confirm('Are you sure you want to logout?')) {
+          sessionStorage.clear();
+          alert('You have been logged out.');
+          window.location.href = 'Login.html';
+        }
+      }
+
+      // Session timeout handling
+      let sessionTimeout;
+
+      function resetSessionTimeout() {
+        clearTimeout(sessionTimeout);
+        sessionTimeout = setTimeout(function() {
+          alert('Your session has expired. Please log in again.');
+          logoutUser();
+        }, 30 * 60 * 1000); // 30 minutes
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        if (!checkAuthentication()) return;
+
+        displayUserInfo();
+
+        // Reset session timeout on user activity
+        document.addEventListener('click', resetSessionTimeout);
+        document.addEventListener('keypress', resetSessionTimeout);
+        document.addEventListener('scroll', resetSessionTimeout);
+
+        // Initialize session timeout
+        resetSessionTimeout();
+
+        // Attach logout function
+        document.getElementById('logoutButton').addEventListener('click', logoutUser);
       });
-      
-      userPhoneElements.forEach(el => {
-        if (userPhone) el.textContent = userPhone;
-      });
-    });
-  }
-  
-  // Logout function
-  window.logoutUser = function() {
-    if (confirm('Are you sure you want to logout?')) {
-      // Clear session
-      sessionStorage.clear();
-      
-      // Redirect to login
-      window.location.href = 'Login.html';
-    }
-  };
-  
-  // Session timeout (optional - 30 minutes)
-  let sessionTimeout;
-  
-  function resetSessionTimeout() {
-    clearTimeout(sessionTimeout);
-    sessionTimeout = setTimeout(function() {
-      alert('Your session has expired. Please login again.');
-      logoutUser();
-    }, 30 * 60 * 1000); // 30 minutes
-  }
-  
-  // Reset timeout on user activity
-  document.addEventListener('click', resetSessionTimeout);
-  document.addEventListener('keypress', resetSessionTimeout);
-  document.addEventListener('scroll', resetSessionTimeout);
-  
-  // Initialize when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initDashboardSecurity);
-  } else {
-    initDashboardSecurity();
-  }
-  
-  // Start session timeout
-  resetSessionTimeout();
-  
-})();
-</script>
+
+    })();
+  </script>
 </head>
 <body>
-  
+  <div class="dashboard">
+    <h1>Welcome to Your Dashboard</h1>
+    <div class="user-info">
+      <p><strong>Name:</strong> <span id="userName">Loading...</span></p>
+      <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
+      <p><strong>Phone:</strong> <span id="userPhone">Loading...</span></p>
+    </div>
+    <button id="logoutButton">Logout</button>
+  </div>
 </body>
 </html>
