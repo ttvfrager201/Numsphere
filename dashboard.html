@@ -123,64 +123,22 @@
         transform: translateY(-20px);
       }
     }
-  .error-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(21, 21, 21, 0.95); /* Darker but not pure black */
-  color: #eee;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 2rem;
-  z-index: 2000;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  box-shadow: 0 0 30px rgba(66, 99, 235, 0.5);
-  border-radius: 12px;
-  max-width: 400px;
-  margin: auto;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.error-overlay h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  color: #4263eb; /* brand blue */
-  text-shadow: 0 0 8px rgba(66, 99, 235, 0.7);
-}
-
-.error-overlay p {
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
-  color: #ccc;
-  line-height: 1.4;
-}
-
-.error-overlay button {
-  padding: 0.75rem 2.5rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 8px;
-  background-color: #4263eb;
-  color: white;
-  cursor: pointer;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 12px rgba(66, 99, 235, 0.5);
-}
-
-.error-overlay button:hover {
-  background-color: #2f4bcf;
-  box-shadow: 0 6px 18px rgba(47, 75, 207, 0.7);
-}
-
+    .banner {
+      position: fixed;
+      top: -100px;
+      left: 0;
+      width: 100%;
+      background-color: #f44336;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      transition: top 0.5s ease;
+      z-index: 1000;
+    }
+    .banner.show {
+      top: 0;
+    }
   </style>
   <script>
     (function() {
@@ -192,29 +150,11 @@
         const userEmail = sessionStorage.getItem('userEmail');
 
         if (!userLoggedIn || userLoggedIn !== 'true' || !userEmail) {
-          showErrorOverlay('Access Denied', 'You are not authorized to view this page.', 'Login.html');
+          showBanner('Access denied. Please log in.');
+          setTimeout(() => window.location.href = 'Login.html', 2000);
           return false;
         }
         return true;
-      }
-
-      // Show custom error overlay
-      function showErrorOverlay(title, message, redirectUrl) {
-        const overlay = document.createElement('div');
-        overlay.className = 'error-overlay';
-
-        overlay.innerHTML = `
-          <h1>${title}</h1>
-          <p>${message}</p>
-          <button onclick="window.location.href='${redirectUrl}'">Go to Login</button>
-        `;
-
-        document.body.appendChild(overlay);
-
-        // Timer-based redirect (5 seconds)
-        setTimeout(() => {
-          window.location.href = redirectUrl;
-        }, 5000);
       }
 
       // Force re-check when navigating back
@@ -240,7 +180,16 @@
       // Logout user
       function logoutUser() {
         sessionStorage.clear();
-        showErrorOverlay('Logged Out', 'You have been logged out successfully.', 'Login.html');
+        showBanner('You have been logged out.');
+        setTimeout(() => window.location.href = 'Login.html', 2000);
+      }
+
+      // Show banner
+      function showBanner(message) {
+        const banner = document.getElementById('banner');
+        banner.textContent = message;
+        banner.classList.add('show');
+        setTimeout(() => banner.classList.remove('show'), 4000);
       }
 
       document.addEventListener('DOMContentLoaded', function() {
