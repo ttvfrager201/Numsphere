@@ -202,14 +202,12 @@
       font-size: 2rem;
     }
     
-  .stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-top: 2rem;
-  padding: 0;
-  box-sizing: border-box;
-}
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
     
     .stat-card {
       background: white;
@@ -222,8 +220,6 @@
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
-       min-width: 0; /* Prevents cards from overflowing */
-  box-sizing: border-box;
     }
     
     .stat-card::before {
@@ -514,13 +510,13 @@
     }
     
     /* Welcome text animation */
-   .welcome-section h1 {
-  overflow: hidden;
-  border-right: 2px solid #4263eb;
-  white-space: nowrap;
-  animation: typing 2s steps(20, end) 0.8s forwards, blink 0.5s step-end infinite 0.8s, removeCursor 0.1s ease-in-out 3s forwards;
-  width: 0;
-}
+    .welcome-section h1 {
+      overflow: hidden;
+      border-right: 2px solid #4263eb;
+      white-space: nowrap;
+      animation: typing 2s steps(20, end) 0.8s forwards, blink 0.5s step-end infinite 0.8s, removeCursor 0.1s ease-in-out 3s forwards;
+      width: 0;
+    }
     
     @keyframes typing {
       from { width: 0; }
@@ -531,9 +527,11 @@
       from, to { border-color: transparent; }
       50% { border-color: #4263eb; }
     }
+    
     @keyframes removeCursor {
-  to { border-color: transparent; }
-}
+      to { border-color: transparent; }
+    }
+    
     /* Mobile responsiveness */
     @media (max-width: 768px) {
       .header {
@@ -542,6 +540,10 @@
         text-align: center;
       }
       
+      .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+      }
       
       .welcome-section h1 {
         font-size: 1.5rem;
@@ -773,7 +775,7 @@
     window.addEventListener('beforeunload', function() {
       if (sessionStorage.getItem('isLoggingOut') === 'true') {
         sessionStorage.clear();
-      }
+      });
     });
   </script>
 </body>
