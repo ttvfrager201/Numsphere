@@ -905,7 +905,15 @@
   width: 100%;
   height: 100px;
 }
-
+@media (max-width: 768px) {
+  .phone-visual {
+    display: none; /* This will completely hide the phone visual on mobile */
+  }
+  
+  .hero {
+    padding-bottom: 5rem; /* Reset the padding since phone is hidden */
+  }
+}
   </style>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-1V9JH211J0"></script>
