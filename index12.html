@@ -883,6 +883,44 @@
         transform: skewX(-30deg) translateX(150px);
       }
     }
+    .hamburger {
+  display: none;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+    right: 5%;
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 200;
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+
+  .nav-links a {
+    padding: 0.5rem 0;
+  }
+
+  .get-started {
+    width: 100%;
+    text-align: center;
+  }
+}
+
   </style>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-1V9JH211J0"></script>
@@ -903,13 +941,16 @@
       </div>
       NumSphere
     </a>
-    <div class="nav-links">
-      <a href="#">Features</a>
-      <a href="#">How It Works</a>
-      <a href="#">Pricing</a>
-      <a href="#">Testimonials</a>
-    </div>
-    <a href="Login.html" class="get-started">Login</a>
+   <div class="hamburger" onclick="toggleMenu()">☰</div>
+
+<div class="nav-links" id="navMenu">
+  <a href="#">Features</a>
+  <a href="#">How It Works</a>
+  <a href="#">Pricing</a>
+  <a href="#">Testimonials</a>
+  <a href="Login.html" class="get-started">Login</a>
+</div>
+
   </nav>
   
   <!-- Hero Section -->
@@ -1448,6 +1489,11 @@
         circle.style.animationDelay = `${index * 1.5}s`;
       });
     });
+  function toggleMenu() {
+    const menu = document.getElementById('navMenu');
+    menu.classList.toggle('active');
+  }
+
   </script>
 </body>
 </html>
