@@ -95,6 +95,15 @@
       position: relative;
       overflow: hidden;
     }
+  .hero-blob {
+  position: absolute;
+  top: -200px;
+  left: -150px;
+  width: 600px;
+  height: 600px;
+  z-index: 0;
+  pointer-events: none;
+}
 
     .hero-content {
       max-width: 550px;
@@ -924,6 +933,15 @@
     <div class="bg-circle bg-circle-1"></div>
     <div class="bg-circle bg-circle-2"></div>
     
+    <svg class="hero-blob" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(300,300)">
+    <path d="M150,-190C185,-145,190,-80,175,-30C160,20,125,60,90,90C55,120,20,140,-30,145C-80,150,-140,140,-160,100C-180,60,-160,-10,-130,-60C-100,-110,-50,-150,10,-160C70,-170,140,-150,150,-190Z"
+      fill="#4263eb" opacity="0.08">
+      <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0" to="360" dur="60s" repeatCount="indefinite" />
+    </path>
+  </g>
+</svg>
+
     <div class="hero-content">
       <h1>Transform Your Business Communication with AI</h1>
       <p>NumSphere combines VoIP technology with advanced AI agents to revolutionize how you connect with customers.</p>
