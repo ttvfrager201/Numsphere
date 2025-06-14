@@ -272,14 +272,18 @@
     }
     
     // Secure logout function
-    function logoutUser() {
-      // Hide content immediately
-      document.body.classList.remove('authenticated');
-      sessionStorage.clear();
-      showBanner('You have been logged out.');
-      setTimeout(() => window.location.href = 'Login.html', 1500);
-    }
-    
+  function logoutUser() {
+  // Show banner first
+  showBanner('You have been logged out.');
+  
+  // Hide content after a brief delay
+  setTimeout(() => {
+    document.body.classList.remove('authenticated');
+    sessionStorage.setItem('isLoggingOut', 'true');
+    sessionStorage.clear();
+    window.location.href = 'Login.html';
+  }, 1000);
+}
     // Prevent back button access after logout
     function preventBackButton() {
       window.history.pushState(null, "", window.location.href);
