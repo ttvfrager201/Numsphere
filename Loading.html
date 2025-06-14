@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <link rel="icon" type="image/x-icon" href="https://i.imgur.com/E4FIiRK.png">
+  <title>Loading - NumSphere</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .loading-container {
+      text-align: center;
+      z-index: 10;
+      position: relative;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 2rem;
+      text-decoration: none;
+      animation: logoGlow 2s ease-in-out infinite alternate;
+    }
+    
+    .logo-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      animation: logoCirclePulse 2s ease-in-out infinite;
+    }
+    
+    .logo-inner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid white;
+      border-radius: 50%;
+      animation: logoInnerSpin 3s linear infinite;
+    }
+    
+    .loading-text {
+      font-size: 1.2rem;
+      font-weight: 500;
+      margin-bottom: 3rem;
+      opacity: 0.9;
+      animation: textFade 1.5s ease-in-out infinite alternate;
+    }
+    
+    .loading-svg {
+      margin-bottom: 2rem;
+      animation: svgFloat 3s ease-in-out infinite;
+    }
+    
+    .progress-container {
+      width: 300px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+      margin: 2rem auto;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1);
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.3s ease;
+      position: relative;
+    }
+    
+    .progress-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      animation: progressShimmer 2s linear infinite;
+    }
+    
+    .loading-message {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-top: 1rem;
+      min-height: 20px;
+    }
+    
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      animation: particleFloat 4s linear infinite;
+    }
+    
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: orbFloat 8s ease-in-out infinite;
+    }
+    
+    .orb1 {
+      width: 200px;
+      height: 200px;
+      top: 10%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+    
+    .orb2 {
+      width: 150px;
+      height: 150px;
+      top: 60%;
+      right: 15%;
+      animation-delay: -2s;
+    }
+    
+    .orb3 {
+      width: 100px;
+      height: 100px;
+      bottom: 20%;
+      left: 20%;
+      animation-delay: -4s;
+    }
+    
+    /* Pulsing circle animations */
+    .pulse-ring {
+      animation: pulseRing 2s ease-in-out infinite;
+    }
+    
+    .pulse-ring-delayed {
+      animation: pulseRing 2s ease-in-out infinite;
+      animation-delay: 1s;
+    }
+    
+    .circuit-path {
+      stroke-dasharray: 10;
+      animation: circuitFlow 3s linear infinite;
+    }
+    
+    .circuit-path-reverse {
+      stroke-dasharray: 8;
+      animation: circuitFlow 2s linear infinite reverse;
+    }
+    
+    .data-node {
+      animation: dataNodePulse 2s ease-in-out infinite;
+    }
+    
+    .connection-line {
+      stroke-dasharray: 4;
+      animation: connectionPulse 1s linear infinite;
+    }
+    
+    @keyframes logoGlow {
+      0% { text-shadow: 0 0 20px rgba(255,255,255,0.5); }
+      100% { text-shadow: 0 0 30px rgba(255,255,255,0.8), 0 0 40px rgba(255,255,255,0.3); }
+    }
+    
+    @keyframes logoCirclePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    
+    @keyframes logoInnerSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @keyframes textFade {
+      0% { opacity: 0.7; }
+      100% { opacity: 1; }
+    }
+    
+    @keyframes svgFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes progressShimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    @keyframes particleFloat {
+      0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) translateX(100px);
+        opacity: 0;
+      }
+    }
+    
+    @keyframes orbFloat {
+      0%, 100% {
+        transform: translateY(0px) translateX(0px);
+      }
+      25% {
+        transform: translateY(-20px) translateX(20px);
+      }
+      50% {
+        transform: translateY(-10px) translateX(-10px);
+      }
+      75% {
+        transform: translateY(-30px) translateX(15px);
+      }
+    }
+    
+    @keyframes pulseRing {
+      0% { 
+        r: 50; 
+        opacity: 1; 
+      }
+      100% { 
+        r: 55; 
+        opacity: 0.3; 
+      }
+    }
+    
+    @keyframes circuitFlow {
+      0% { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: -50; }
+    }
+    
+    @keyframes dataNodePulse {
+      0%, 100% { 
+        fill: #4ecdc4; 
+        r: 8;
+      }
+      50% { 
+        fill: #ff6b6b; 
+        r: 12;
+      }
+    }
+    
+    @keyframes connectionPulse {
+      0% { stroke-dashoffset: 0; opacity: 1; }
+      25% { opacity: 0.7; }
+      50% { stroke-dashoffset: -8; opacity: 1; }
+      75% { opacity: 0.7; }
+      100% { stroke-dashoffset: -16; opacity: 1; }
+    }
+    
+    .fade-out {
+      animation: fadeOut 0.8s ease-in-out forwards;
+    }
+    
+    @keyframes fadeOut {
+      0% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(0.9); }
+    }
+    
+    .slide-up {
+      animation: slideUp 0.6s ease-out forwards;
+    }
+    
+    @keyframes slideUp {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(-50px); opacity: 0; }
+    }
+
+    @media (max-width: 480px) {
+      .logo {
+        font-size: 2rem;
+      }
+      .progress-container {
+        width: 250px;
+      }
+      .loading-svg svg {
+        width: 100px;
+        height: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+  
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  
+  <div class="loading-container" id="loadingContainer">
+    <div class="logo">
+      <div class="logo-circle">
+        <div class="logo-inner"></div>
+      </div>
+      NumSphere
+    </div>
+    
+    <div class="loading-text">Preparing your dashboard...</div>
+    
+    <div class="loading-svg">
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        <!-- Outer pulsing rings -->
+        <circle cx="60" cy="60" class="pulse-ring" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+        
+        <!-- Circuit paths using CSS animations -->
+        <path d="M60,10 Q80,30 100,60 Q80,90 60,110 Q40,90 20,60 Q40,30 60,10" 
+              fill="none" stroke="#4ecdc4" stroke-width="2" 
+              class="circuit-path"/>
+        
+        <path d="M10,60 Q30,40 60,20 Q90,40 110,60 Q90,80 60,100 Q30,80 10,60" 
+              fill="none" stroke="#ff6b6b" stroke-width="2" 
+              class="circuit-path-reverse"/>
+        
+        <!-- Central node -->
+        <circle cx="60" cy="60" class="data-node" fill="#4ecdc4"/>
+        
+        <!-- Corner nodes -->
+        <circle cx="30" cy="30" r="4" fill="#45b7d1" class="data-node" style="animation-delay: 0.5s;"/>
+        <circle cx="90" cy="30" r="4" fill="#45b7d1" class="data-node" style="animation-delay: 1s;"/>
+        <circle cx="90" cy="90" r="4" fill="#45b7d1" class="data-node" style="animation-delay: 1.5s;"/>
+        <circle cx="30" cy="90" r="4" fill="#45b7d1" class="data-node" style="animation-delay: 2s;"/>
+        
+        <!-- Connection lines -->
+        <line x1="30" y1="30" x2="60" y2="60" stroke="rgba(255,255,255,0.6)" stroke-width="1" 
+              class="connection-line"/>
+        <line x1="90" y1="30" x2="60" y2="60" stroke="rgba(255,255,255,0.6)" stroke-width="1" 
+              class="connection-line" style="animation-delay: 0.25s;"/>
+        <line x1="90" y1="90" x2="60" y2="60" stroke="rgba(255,255,255,0.6)" stroke-width="1" 
+              class="connection-line" style="animation-delay: 0.5s;"/>
+        <line x1="30" y1="90" x2="60" y2="60" stroke="rgba(255,255,255,0.6)" stroke-width="1" 
+              class="connection-line" style="animation-delay: 0.75s;"/>
+      </svg>
+    </div>
+    
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    
+    <div class="loading-message" id="loadingMessage">Initializing...</div>
+  </div>
+
+  <script>
+    (function() {
+      'use strict';
+
+      console.log('Loading screen initialized');
+
+      // Create floating particles
+      function createParticles() {
+        const particlesContainer = document.getElementById('particles');
+        if (!particlesContainer) {
+          console.error('Particles container not found');
+          return;
+        }
+        
+        const particleCount = 15;
+        
+        for (let i = 0; i < particleCount; i++) {
+          const particle = document.createElement('div');
+          particle.className = 'particle';
+          particle.style.left = Math.random() * 100 + '%';
+          particle.style.animationDelay = Math.random() * 4 + 's';
+          particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+          particlesContainer.appendChild(particle);
+        }
+        console.log('Particles created:', particleCount);
+      }
+
+      // Progress simulation
+      function simulateProgress() {
+        const progressBar = document.getElementById('progressBar');
+        const loadingMessage = document.getElementById('loadingMessage');
+        
+        if (!progressBar || !loadingMessage) {
+          console.error('Progress elements not found');
+          return;
+        }
+        
+        const steps = [
+          { progress: 0, message: 'Initializing...' },
+          { progress: 15, message: 'Connecting to server...' },
+          { progress: 30, message: 'Authenticating user...' },
+          { progress: 45, message: 'Loading user data...' },
+          { progress: 60, message: 'Preparing dashboard...' },
+          { progress: 75, message: 'Finalizing setup...' },
+          { progress: 90, message: 'Almost ready...' },
+          { progress: 100, message: 'Welcome to NumSphere!' }
+        ];
+        
+        let currentStep = 0;
+        
+        function updateProgress() {
+          if (currentStep < steps.length) {
+            const step = steps[currentStep];
+            progressBar.style.width = step.progress + '%';
+            loadingMessage.textContent = step.message;
+            
+            console.log(`Progress: ${step.progress}% - ${step.message}`);
+            
+            currentStep++;
+            
+            // Variable timing for more realistic feel
+            const delay = currentStep < 3 ? 800 : 
+                         currentStep < 6 ? 600 : 400;
+            
+            setTimeout(updateProgress, delay);
+          } else {
+            // Loading complete
+            setTimeout(completeLoading, 800);
+          }
+        }
+        
+        setTimeout(updateProgress, 500);
+      }
+      
+      // Complete loading and redirect
+      function completeLoading() {
+        console.log('Completing loading sequence');
+        const container = document.getElementById('loadingContainer');
+        
+        if (container) {
+          // Add completion animation
+          container.classList.add('slide-up');
+          document.body.classList.add('fade-out');
+        }
+        
+        // Redirect to dashboard
+        setTimeout(() => {
+          // Check if we have the required session data
+          const isAuthenticated = sessionStorage.getItem('isAuthenticated');
+          const userEmail = sessionStorage.getItem('userEmail');
+          
+          console.log('Auth check:', { isAuthenticated, userEmail });
+          
+          if (isAuthenticated === 'true' && userEmail) {
+            console.log('Redirecting to dashboard');
+            window.location.href = 'dashboard.html';
+          } else {
+            // Fallback to login if session is invalid
+            console.log('Redirecting to login - invalid session');
+            window.location.href = 'Login.html';
+          }
+        }, 600);
+      }
+      
+      // Initialize loading screen
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded, starting initialization');
+        
+        // Verify authentication
+        const isAuthenticated = sessionStorage.getItem('isAuthenticated');
+        const userEmail = sessionStorage.getItem('userEmail');
+        
+        console.log('Session check:', { isAuthenticated, userEmail });
+        
+        if (isAuthenticated !== 'true' || !userEmail) {
+          // If not authenticated, redirect to login immediately
+          console.log('Not authenticated, redirecting to login');
+          window.location.href = 'Login.html';
+          return;
+        }
+        
+        console.log('Authentication verified, starting loading sequence');
+        createParticles();
+        simulateProgress();
+        
+        // Fallback timer in case something goes wrong
+        setTimeout(() => {
+          if (document.getElementById('loadingContainer')) {
+            console.log('Fallback timer triggered');
+            completeLoading();
+          }
+        }, 8000);
+      });
+      
+      // Handle page visibility changes
+      document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+          // Pause animations when tab is not visible
+          document.body.style.animationPlayState = 'paused';
+        } else {
+          // Resume animations when tab becomes visible
+          document.body.style.animationPlayState = 'running';
+        }
+      });
+      
+      // Error handling
+      window.addEventListener('error', function(e) {
+        console.error('Loading screen error:', e.error);
+      });
+      
+    })();
+  </script>
+</body>
+</html>
