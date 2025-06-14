@@ -469,22 +469,24 @@
         }
         
         // Redirect to dashboard
-        setTimeout(() => {
-          // Check if we have the required session data
-          const isAuthenticated = sessionStorage.getItem('isAuthenticated');
-          const userEmail = sessionStorage.getItem('userEmail');
-          
-          console.log('Auth check:', { isAuthenticated, userEmail });
-          
-          if (isAuthenticated === 'true' && userEmail) {
-            console.log('Redirecting to dashboard');
-            window.location.href = 'dashboard.html';
-          } else {
-            // Fallback to login if session is invalid
-            console.log('Redirecting to login - invalid session');
-            window.location.href = 'Login.html';
-          }
-        }, 600);
+       setTimeout(() => {
+    // Check if we have the required session data
+    const isAuthenticated = sessionStorage.getItem('isAuthenticated');
+    const userEmail = sessionStorage.getItem('userEmail');
+    
+    console.log('Auth check:', { isAuthenticated, userEmail });
+    
+    if (isAuthenticated === 'true' && userEmail) {
+        console.log('Redirecting to dashboard');
+        // Set flag that we're coming from loading screen
+        sessionStorage.setItem('fromLoading', 'true');
+        window.location.href = 'dashboard.html';
+    } else {
+        // Fallback to login if session is invalid
+        console.log('Redirecting to login - invalid session');
+        window.location.href = 'Login.html';
+    }
+}, 600);
       }
       
       // Initialize loading screen
