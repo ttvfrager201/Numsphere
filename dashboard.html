@@ -706,7 +706,13 @@
         }
       }
     }
-    
+    function preventBackNavigation() {
+  history.pushState(null, '', location.href); // Push current state to history
+  window.onpopstate = function () {
+    history.pushState(null, '', location.href); // Immediately push it again if user presses back
+  };
+}
+
     // Initial authentication check and setup
     document.addEventListener('DOMContentLoaded', function() {
       // IMMEDIATE authentication check before anything else
@@ -724,7 +730,7 @@
       
       // Clear the loading flag
       sessionStorage.removeItem('fromLoading');
-      
+      preventBackNavigation(); // ✅ block back navigation
       // Prevent back button after logout
       preventBackButton();
       
@@ -776,6 +782,14 @@
         sessionStorage.clear();
       }
     });
+
+    // ✅ Force reload if page is accessed via browser back button (from cache)
+window.addEventListener('pageshow', function(event) {
+  if (event.persisted || window.performance.getEntriesByType("navigation")[0].type === "back_forward") {
+    window.location.reload();
+  }
+});
+
   </script>
 </body>
 </html>
