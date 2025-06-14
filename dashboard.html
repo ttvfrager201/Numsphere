@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <link rel="icon" type="image/x-icon" href="https://i.imgur.com/E4FIiRK.png">
@@ -19,6 +19,24 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #f8f9fa;
       color: #151515;
+    }
+    
+    .banner {
+      position: fixed;
+      top: -100px;
+      left: 0;
+      width: 100%;
+      background-color: #f44336;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      transition: top 0.5s ease;
+      z-index: 1000;
+    }
+    
+    .banner.show {
+      top: 0;
     }
     
     .header {
@@ -162,6 +180,8 @@
   </style>
 </head>
 <body>
+  <div id="banner" class="banner"></div>
+  
   <header class="header">
     <a href="#" class="logo">
       <div class="logo-circle">
@@ -171,7 +191,7 @@
     </a>
     <div class="user-info">
       <span id="userEmail">Loading...</span>
-      <button class="logout-btn" onclick="logout()">Logout</button>
+      <button class="logout-btn" onclick="logoutUser()">Logout</button>
     </div>
   </header>
 
@@ -220,31 +240,84 @@
     </div>
   </main>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Check authentication
-      const isAuthenticated = sessionStorage.getItem('isAuthenticated');
+  <script>  
+    // Security function to check authentication
+    function checkAuthentication() {
+      const userLoggedIn = sessionStorage.getItem('isAuthenticated');
       const userEmail = sessionStorage.getItem('userEmail');
       
-      if (isAuthenticated !== 'true' || !userEmail) {
-    window.location.href = 'Login.html';
-    return;
-}
-
-// Check if coming from loading screen
-const fromLoading = sessionStorage.getItem('fromLoading');
-if (!fromLoading) {
-    // If not coming from loading, redirect to loading first
-    window.location.href = 'Loading.html';
-    return;
-}
-
-// Clear the loading flag
-sessionStorage.removeItem('fromLoading');
+      if (!userLoggedIn || userLoggedIn !== 'true' || !userEmail) {
+        showBanner('Access denied. Please log in.');
+        setTimeout(() => window.location.href = 'Login.html', 2000);
+        return false;
+      }
+      return true;
+    }
+    
+    // Show banner function
+    function showBanner(message) {
+      const banner = document.getElementById('banner');
+      banner.textContent = message;
+      banner.classList.add('show');
+      setTimeout(() => banner.classList.remove('show'), 4000);
+    }
+    
+    // Secure logout function
+    function logoutUser() {
+      sessionStorage.clear();
+      showBanner('You have been logged out.');
+      setTimeout(() => window.location.href = 'Login.html', 2000);
+    }
+    
+    // Prevent back button access after logout
+    function preventBackButton() {
+      window.history.pushState(null, "", window.location.href);
+      window.onpopstate = function() {
+        window.history.pushState(null, "", window.location.href);
+      };
+    }
+    
+    // Check authentication on page visibility change
+    function handleVisibilityChange() {
+      if (!document.hidden) {
+        if (!checkAuthentication()) {
+          return;
+        }
+      }
+    }
+    
+    // Initial authentication check and setup
+    document.addEventListener('DOMContentLoaded', function() {
+      // First check authentication
+      if (!checkAuthentication()) {
+        return;
+      }
+      
+      // Check if coming from loading screen
+      const fromLoading = sessionStorage.getItem('fromLoading');
+      if (!fromLoading) {
+        // If not coming from loading, redirect to loading first
+        window.location.href = 'Loading.html';
+        return;
+      }
+      
+      // Clear the loading flag
+      sessionStorage.removeItem('fromLoading');
+      
+      // Prevent back button after logout
+      preventBackButton();
       
       // Load user information
       loadUserInfo();
+      
+      // Add visibility change listener for additional security
+      document.addEventListener('visibilitychange', handleVisibilityChange);
     });
+    
+    // Continuous authentication check every 5 seconds
+    setInterval(function() {
+      checkAuthentication();
+    }, 5000);
     
     function loadUserInfo() {
       const userEmail = sessionStorage.getItem('userEmail');
@@ -258,21 +331,17 @@ sessionStorage.removeItem('fromLoading');
       document.getElementById('userPlan').textContent = userPlan || 'Basic';
     }
     
-    function logout() {
-      // Clear session data
-      sessionStorage.removeItem('isAuthenticated');
-      sessionStorage.removeItem('userEmail');
-      sessionStorage.removeItem('userName');
-      sessionStorage.removeItem('userPhone');
-      sessionStorage.removeItem('userPlan');
-      
-      // Redirect to login
-      window.location.href = 'Login.html';
-    }
-    
     function showFeature(feature) {
       alert(`${feature} feature will be implemented in the next update!`);
     }
+    
+    // Additional security: Clear session on page unload
+    window.addEventListener('beforeunload', function() {
+      // This will help clear any residual data
+      if (sessionStorage.getItem('isLoggingOut') === 'true') {
+        sessionStorage.clear();
+      }
+    });
   </script>
 </body>
 </html>
