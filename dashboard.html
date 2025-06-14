@@ -227,9 +227,20 @@
       const userEmail = sessionStorage.getItem('userEmail');
       
       if (isAuthenticated !== 'true' || !userEmail) {
-        window.location.href = 'Login.html';
-        return;
-      }
+    window.location.href = 'Login.html';
+    return;
+}
+
+// Check if coming from loading screen
+const fromLoading = sessionStorage.getItem('fromLoading');
+if (!fromLoading) {
+    // If not coming from loading, redirect to loading first
+    window.location.href = 'loading.html';
+    return;
+}
+
+// Clear the loading flag
+sessionStorage.removeItem('fromLoading');
       
       // Load user information
       loadUserInfo();
