@@ -19,6 +19,11 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #f8f9fa;
       color: #151515;
+      visibility: hidden; /* Hide content initially */
+    }
+    
+    body.authenticated {
+      visibility: visible; /* Show content only after authentication */
     }
     
     .banner {
@@ -247,10 +252,14 @@
       const userEmail = sessionStorage.getItem('userEmail');
       
       if (!userLoggedIn || userLoggedIn !== 'true' || !userEmail) {
+        // Hide content immediately
+        document.body.classList.remove('authenticated');
         showBanner('Access denied. Please log in.');
-        setTimeout(() => window.location.href = 'Login.html', 2000);
+        setTimeout(() => window.location.href = 'Login.html', 1500);
         return false;
       }
+      // Show content only if authenticated
+      document.body.classList.add('authenticated');
       return true;
     }
     
@@ -264,9 +273,11 @@
     
     // Secure logout function
     function logoutUser() {
+      // Hide content immediately
+      document.body.classList.remove('authenticated');
       sessionStorage.clear();
       showBanner('You have been logged out.');
-      setTimeout(() => window.location.href = 'Login.html', 2000);
+      setTimeout(() => window.location.href = 'Login.html', 1500);
     }
     
     // Prevent back button access after logout
@@ -288,7 +299,7 @@
     
     // Initial authentication check and setup
     document.addEventListener('DOMContentLoaded', function() {
-      // First check authentication
+      // IMMEDIATE authentication check before anything else
       if (!checkAuthentication()) {
         return;
       }
@@ -296,7 +307,8 @@
       // Check if coming from loading screen
       const fromLoading = sessionStorage.getItem('fromLoading');
       if (!fromLoading) {
-        // If not coming from loading, redirect to loading first
+        // Hide content and redirect to loading
+        document.body.classList.remove('authenticated');
         window.location.href = 'Loading.html';
         return;
       }
@@ -313,6 +325,18 @@
       // Add visibility change listener for additional security
       document.addEventListener('visibilitychange', handleVisibilityChange);
     });
+    
+    // IMMEDIATE check before DOM loads
+    (function() {
+      const userLoggedIn = sessionStorage.getItem('isAuthenticated');
+      const userEmail = sessionStorage.getItem('userEmail');
+      
+      if (!userLoggedIn || userLoggedIn !== 'true' || !userEmail) {
+        // Redirect immediately without showing content
+        window.location.href = 'Login.html';
+        return;
+      }
+    })();
     
     // Continuous authentication check every 5 seconds
     setInterval(function() {
