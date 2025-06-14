@@ -296,11 +296,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         window.location.href = 'ResetPassword.html';
                     }, 2000);
                 } else {
-                    // Normal login - redirect to dashboard
-                    showAlert('Login successful! Redirecting to dashboard...', 'success');
-                    setTimeout(() => {
-                        window.location.href = 'dashboard.html';
-                    }, 1500);
+                   // Normal login - redirect to loading screen first
+                      showAlert('Login successful! Redirecting...', 'success');
+                      setTimeout(() => {
+                      window.location.href = 'loading.html';  // Changed from dashboard.html
+                   }, 1500);
                 }
             } else {
                 showAlert(result.message || 'Login failed. Please check your credentials.', 'error');
