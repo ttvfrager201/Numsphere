@@ -1,1 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="https://i.imgur.com/E4FIiRK.png">
+    <title>Terms of Service - NumSphere</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4263eb 0%, #2f4bcf 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            z-index: 1;
+            position: relative;
+        }
+
+        .logo-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .logo-inner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid #4263eb;
+            border-radius: 50%;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            z-index: 1;
+            position: relative;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            z-index: 1;
+            position: relative;
+        }
+
+        .content {
+            padding: 3rem;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            border-radius: 15px;
+            background: #f8f9fa;
+            border-left: 5px solid #4263eb;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, rgba(66, 99, 235, 0.05) 0%, transparent 50%);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+
+        .section h2 {
+            color: #4263eb;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .section h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin: 1.5rem 0 0.8rem 0;
+        }
+
+        .section p {
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+
+        .section ul {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .section li {
+            margin-bottom: 0.5rem;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            fill: #4263eb;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, rgba(66, 99, 235, 0.1) 0%, rgba(66, 99, 235, 0.05) 100%);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 3px solid #4263eb;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            background: #4263eb;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #2f4bcf;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(66, 99, 235, 0.3);
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .effective-date {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 2rem;
+            border: 2px solid #2196f3;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem;
+                border-radius: 15px;
+            }
+            
+            .content {
+                padding: 2rem 1.5rem;
+            }
+            
+            .section {
+                padding: 1.5rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-circle">
+                    <div class="logo-inner"></div>
+                </div>
+                NumSphere
+            </div>
+            <h1>Terms of Service</h1>
+            <p>Your VoIP & AI Agent Calling Solution</p>
+        </div>
+
+        <div class="content">
+            <div class="effective-date">
+                <strong>Effective Date: June 15, 2025</strong><br>
+                Last Updated: June 15, 2025
+            </div>
+
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    1. Acceptance of Terms
+                </h2>
+                <p>Welcome to NumSphere! By accessing or using our VoIP and AI agent calling services, website, dashboard, or any related applications (collectively, the "Services"), you agree to be bound by these Terms of Service ("Terms"). These Terms constitute a legally binding agreement between you and NumSphere ("Company," "we," "us," or "our").</p>
+                
+                <div class="highlight">
+                    <strong>Important:</strong> If you do not agree to these Terms, please discontinue use of our Services immediately. Your continued use of our Services constitutes acceptance of any updates to these Terms.
+                </div>
+
+                <p>These Terms apply to all users of our Services, including customers, visitors, and any other users of our platform. We reserve the right to modify these Terms at any time, and such modifications will be effective immediately upon posting on our website.</p>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                    </svg>
+                    2. Service Description
+                </h2>
+                <p>NumSphere provides Voice over Internet Protocol (VoIP) communication services and AI-powered agent calling solutions. Our Services include but are not limited to:</p>
+                
+                <ul>
+                    <li><strong>VoIP Communication Services:</strong> Voice calling capabilities over internet protocols</li>
+                    <li><strong>AI Agent Calling:</strong> Automated calling systems powered by artificial intelligence</li>
+                    <li><strong>Dashboard Access:</strong> Web-based interface for managing your account and services</li>
+                    <li><strong>Call Management Tools:</strong> Features for organizing, scheduling, and analyzing calls</li>
+                    <li><strong>Analytics and Reporting:</strong> Detailed insights into call performance and metrics</li>
+                    <li><strong>Customer Support:</strong> Technical assistance and account management support</li>
+                </ul>
+
+                <h3>Service Availability</h3>
+                <p>While we strive to provide continuous service availability, we do not guarantee uninterrupted access to our Services. Service availability may be affected by factors including but not limited to maintenance, upgrades, network issues, or circumstances beyond our control.</p>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+                    </svg>
+                    3. User Accounts and Registration
+                </h2>
+                <p>To access our Services, you must create an account by providing accurate, current, and complete information. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account.</p>
+
+                <h3>Account Requirements</h3>
+                <ul>
+                    <li>You must be at least 18 years old or have parental consent</li>
+                    <li>You must provide valid contact information including email and phone number</li>
+                    <li>You must comply with all applicable laws and regulations</li>
+                    <li>You must not create multiple accounts without authorization</li>
+                </ul>
+
+                <h3>Account Security</h3>
+                <div class="highlight">
+                    You agree to immediately notify us of any unauthorized use of your account or any other breach of security. We are not liable for any loss or damage arising from your failure to protect your account information.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    4. Acceptable Use Policy
+                </h2>
+                <p>You agree to use our Services only for lawful purposes and in accordance with these Terms. You are prohibited from using our Services:</p>
+
+                <ul>
+                    <li>For any illegal activities or to violate any local, state, national, or international law</li>
+                    <li>To harass, abuse, or harm others, or to engage in spam or unsolicited communications</li>
+                    <li>To impersonate any person or entity or misrepresent your affiliation</li>
+                    <li>To interfere with or disrupt our Services or servers</li>
+                    <li>To attempt to gain unauthorized access to our systems</li>
+                    <li>For telemarketing without proper consent and compliance with applicable laws</li>
+                    <li>To transmit malicious code, viruses, or other harmful materials</li>
+                </ul>
+
+                <h3>Compliance with Telecommunications Laws</h3>
+                <p>When using our VoIP and AI calling services, you must comply with all applicable telecommunications regulations, including but not limited to:</p>
+                <ul>
+                    <li>Telephone Consumer Protection Act (TCPA)</li>
+                    <li>CAN-SPAM Act</li>
+                    <li>Do Not Call Registry requirements</li>
+                    <li>State and local telecommunications laws</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                    </svg>
+                    5. Privacy and Data Protection
+                </h2>
+                <p>Your privacy is important to us. Our collection, use, and protection of your personal information is governed by our Privacy Policy, which is incorporated into these Terms by reference.</p>
+
+                <h3>Data Collection and Use</h3>
+                <p>We collect and use information to provide, maintain, and improve our Services. This includes:</p>
+                <ul>
+                    <li>Account information and contact details</li>
+                    <li>Call logs and usage data</li>
+                    <li>Payment and billing information</li>
+                    <li>Technical data for service optimization</li>
+                </ul>
+
+                <div class="highlight">
+                    <strong>Data Security:</strong> We implement appropriate technical and organizational measures to protect your data against unauthorized access, alteration, disclosure, or destruction.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.5 6L12 10.5 8.5 8 12 5.5 15.5 8zM12 17.5L8.5 15 12 12.5 15.5 15 12 17.5z"/>
+                    </svg>
+                    6. Payment Terms and Billing
+                </h2>
+                <p>Our Services are provided on a subscription basis with various pricing plans. Payment terms are as follows:</p>
+
+                <h3>Subscription Plans</h3>
+                <ul>
+                    <li>Monthly and annual subscription options available</li>
+                    <li>Automatic renewal unless cancelled</li>
+                    <li>Proration for plan changes</li>
+                    <li>Usage-based charges may apply for certain features</li>
+                </ul>
+
+                <h3>Payment Processing</h3>
+                <p>Payments are processed securely through third-party payment processors. You authorize us to charge your designated payment method for all applicable fees. If payment fails, we reserve the right to suspend or terminate your service.</p>
+
+                <div class="highlight">
+                    <strong>Refund Policy:</strong> Refunds are provided in accordance with our published refund policy. Generally, we offer pro-rated refunds for unused portions of prepaid services when cancelled within the first 30 days.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    7. Service Level Agreement
+                </h2>
+                <p>We strive to provide reliable service with the following targets:</p>
+
+                <ul>
+                    <li><strong>Uptime:</strong> 99.5% monthly uptime for core services</li>
+                    <li><strong>Call Quality:</strong> High-definition voice quality where network conditions permit</li>
+                    <li><strong>Support Response:</strong> Response to support requests within 24 hours during business days</li>
+                    <li><strong>Data Backup:</strong> Regular backups of your account data and settings</li>
+                </ul>
+
+                <h3>Service Credits</h3>
+                <p>If we fail to meet our uptime commitments, you may be eligible for service credits as outlined in our SLA documentation available on our website.</p>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    8. Intellectual Property Rights
+                </h2>
+                <p>The Services, including all content, features, and functionality, are owned by NumSphere and are protected by intellectual property laws. You are granted a limited, non-exclusive, non-transferable license to use our Services for their intended purpose.</p>
+
+                <h3>User Content</h3>
+                <p>You retain ownership of any content you upload or transmit through our Services. However, you grant us a license to use, store, and transmit such content as necessary to provide our Services.</p>
+
+                <h3>Restrictions</h3>
+                <ul>
+                    <li>You may not reverse engineer or attempt to extract source code</li>
+                    <li>You may not modify, adapt, or create derivative works</li>
+                    <li>You may not remove or alter any proprietary notices</li>
+                    <li>You may not use our trademarks without permission</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM4.64 6.64c.23-.5.49-.94.81-1.31L10.5 10.5 9 12l-4.36-5.36zM12 20c-4.41 0-8-3.59-8-8 0-.31.05-.6.14-.88L12 19.5v.5zm0-10.5l5.36-5.36c.32.37.58.81.81 1.31L14 12l1.5 1.5-7.36 7.36c-.32-.37-.58-.81-.81-1.31L12 9.5z"/>
+                    </svg>
+                    9. Disclaimers and Limitation of Liability
+                </h2>
+                <p>Our Services are provided "as is" and "as available" without warranties of any kind, either express or implied. We disclaim all warranties, including but not limited to merchantability, fitness for a particular purpose, and non-infringement.</p>
+
+                <div class="highlight">
+                    <strong>Important Limitation:</strong> To the maximum extent permitted by law, NumSphere shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of profits, data, or use, regardless of the theory of liability.
+                </div>
+
+                <h3>Liability Cap</h3>
+                <p>Our total liability to you for all claims arising from or relating to these Terms or our Services shall not exceed the amount you paid us in the twelve (12) months preceding the claim.</p>
+
+                <h3>Force Majeure</h3>
+                <p>We are not liable for any failure or delay in performance due to circumstances beyond our reasonable control, including natural disasters, government actions, network failures, or other force majeure events.</p>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-1 16H9V7h9v14z"/>
+                    </svg>
+                    10. Termination
+                </h2>
+                <p>Either party may terminate this agreement at any time. You may cancel your account through our dashboard or by contacting customer support. We may terminate or suspend your account for violation of these Terms or for any other reason at our discretion.</p>
+
+                <h3>Effect of Termination</h3>
+                <ul>
+                    <li>Your right to use our Services will cease immediately</li>
+                    <li>We may delete your account data after a reasonable retention period</li>
+                    <li>You remain liable for all charges incurred before termination</li>
+                    <li>Provisions that by their nature should survive will continue after termination</li>
+                </ul>
+
+                <h3>Data Export</h3>
+                <p>Upon request and where technically feasible, we will provide you with an export of your data in a commonly used format within 30 days of account termination.</p>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                    </svg>
+                    11. Dispute Resolution
+                </h2>
+                <p>We encourage resolving disputes through direct communication. If a dispute cannot be resolved informally, the following process applies:</p>
+
+                <h3>Mediation</h3>
+                <p>Before pursuing formal legal action, both parties agree to attempt mediation through a mutually agreed-upon mediator.</p>
+
+                <h3>Governing Law</h3>
+                <p>These Terms are governed by and construed in accordance with the laws of the jurisdiction where NumSphere is incorporated, without regard to conflict of law principles.</p>
+
+                <div class="highlight">
+                    <strong>Class Action Waiver:</strong> You agree that any disputes will be resolved individually and not as part of a class action or collective proceeding.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2h-1V1m-1 11h-5v5h5v-5z"/>
+                    </svg>
+                    12. Updates and Modifications
+                </h2>
+                <p>We reserve the right to modify these Terms at any time. When we make changes, we will:</p>
+
+                <ul>
+                    <li>Post the updated Terms on our website</li>
+                    <li>Update the "Last Modified" date</li>
+                    <li>Notify you of material changes via email or dashboard notification</li>
+                    <li>Provide reasonable advance notice for significant changes</li>
+                </ul>
+
+                <p>Your continued use of our Services after any modification constitutes acceptance of the updated Terms. If you do not agree to the modifications, you must discontinue use of our Services.</p>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                    13. Contact Information
+                </h2>
+                <p>If you have any questions about these Terms or our Services, please contact us:</p>
+
+                <div class="highlight">
+                    <strong>NumSphere Customer Support</strong><br>
+                    Email: support@numsphere.com<br>
+                    Phone: Available through your dashboard<br>
+                    Website: www.numsphere.com<br>
+                    Business Hours: Monday - Friday, 9:00 AM - 6:00 PM EST
+                </div>
+
+                <p>For legal notices and formal communications, please send correspondence to our registered business address, which can be found on our website's contact page.</p>
+            </div>
+
+            <a href="index.html" class="back-button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px;">
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                </svg>
+                Back to Home
+            </a>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2025 NumSphere. All rights reserved. | <a href="privacy.html" style="color: #74b9ff;">Privacy Policy</a> | <a href="mailto:legal@numsphere.com" style="color: #74b9ff;">Legal</a></p>
+        </div>
+    </div>
+</body>
+</html>
