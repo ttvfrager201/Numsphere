@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="https://i.imgur.com/E4FIiRK.png">
+    <title>Refund Policy - NumSphere</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4263eb 0%, #2f4bcf 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            z-index: 1;
+            position: relative;
+        }
+
+        .logo-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .logo-inner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid #4263eb;
+            border-radius: 50%;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            z-index: 1;
+            position: relative;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            z-index: 1;
+            position: relative;
+        }
+
+        .content {
+            padding: 3rem;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            border-radius: 15px;
+            background: #f8f9fa;
+            border-left: 5px solid #4263eb;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, rgba(66, 99, 235, 0.05) 0%, transparent 50%);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+
+        .section h2 {
+            color: #4263eb;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .section h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin: 1.5rem 0 0.8rem 0;
+        }
+
+        .section p {
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+
+        .section ul {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .section li {
+            margin-bottom: 0.5rem;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            fill: #4263eb;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, rgba(66, 99, 235, 0.1) 0%, rgba(66, 99, 235, 0.05) 100%);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 3px solid #4263eb;
+        }
+
+        .warning-box {
+            background: linear-gradient(120deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 152, 0, 0.05) 100%);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 3px solid #ff9800;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            background: #4263eb;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #2f4bcf;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(66, 99, 235, 0.3);
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .effective-date {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 2rem;
+            border: 2px solid #2196f3;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            .container {
+                margin: 0.5rem;
+                border-radius: 15px;
+                min-height: calc(100vh - 1rem);
+            }
+            
+            .header {
+                padding: 2rem 1rem;
+            }
+            
+            .content {
+                padding: 1.5rem 1rem;
+            }
+            
+            .section {
+                padding: 1.5rem 1rem;
+                margin-bottom: 2rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .logo {
+                font-size: 1.8rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .logo-circle {
+                width: 40px;
+                height: 40px;
+                margin-right: 10px;
+            }
+
+            .logo-inner {
+                width: 16px;
+                height: 16px;
+                border: 2px solid #4263eb;
+            }
+
+            .section h2 {
+                font-size: 1.4rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .section h3 {
+                font-size: 1.1rem;
+                margin: 1rem 0 0.6rem 0;
+            }
+
+            .icon {
+                width: 20px;
+                height: 20px;
+                margin-right: 8px;
+            }
+
+            .highlight, .warning-box {
+                padding: 1rem 0.8rem;
+                margin: 0.8rem 0;
+            }
+
+            .effective-date {
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .section ul {
+                padding-left: 1.5rem;
+            }
+
+            .section li {
+                margin-bottom: 0.4rem;
+                font-size: 0.95rem;
+            }
+
+            .section p {
+                font-size: 0.95rem;
+                line-height: 1.5;
+            }
+
+            .back-button {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+                margin-top: 1.5rem;
+                width: 100%;
+                justify-content: center;
+                text-align: center;
+            }
+
+            .footer {
+                padding: 1.5rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .footer p {
+                line-height: 1.4;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                margin: 0.25rem;
+                border-radius: 12px;
+            }
+
+            .header {
+                padding: 1.5rem 0.8rem;
+            }
+
+            .content {
+                padding: 1rem 0.8rem;
+            }
+
+            .section {
+                padding: 1rem 0.8rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.6rem;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .logo-circle {
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+
+            .section h2 {
+                font-size: 1.2rem;
+            }
+
+            .section h3 {
+                font-size: 1rem;
+            }
+
+            .highlight, .warning-box {
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            .effective-date {
+                padding: 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            .section p, .section li {
+                font-size: 0.9rem;
+            }
+
+            .back-button {
+                padding: 12px 16px;
+                font-size: 0.85rem;
+            }
+
+            .footer {
+                padding: 1rem 0.8rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-circle">
+                    <div class="logo-inner"></div>
+                </div>
+                NumSphere
+            </div>
+            <h1>Refund Policy</h1>
+            <p>Clear and Fair Refund Terms</p>
+        </div>
+
+        <div class="content">
+            <div class="effective-date">
+                <strong>Effective Date: June 15, 2025</strong><br>
+                Last Updated: June 15, 2025
+            </div>
+
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    Refund Eligibility
+                </h2>
+                <p>NumSphere offers refunds for subscription services within thirty (30) days of your initial subscription purchase or renewal date. Refund eligibility is determined based on your subscription usage and adherence to our Terms of Service.</p>
+                
+                <div class="highlight">
+                    <strong>30-Day Refund Window:</strong> All refund requests must be submitted within thirty (30) days of your subscription payment date. Requests submitted after this period will not be eligible for refunds.
+                </div>
+
+                <h3>Refund Criteria</h3>
+                <p>To be eligible for a refund, your account must meet the following requirements:</p>
+                <ul>
+                    <li>Refund request submitted within the 30-day window</li>
+                    <li>Account in good standing with no violations of our Terms of Service</li>
+                    <li>No excessive or abusive usage patterns</li>
+                    <li>Valid reason for refund request provided</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.5 6L12 10.5 8.5 8 12 5.5 15.5 8zM12 17.5L8.5 15 12 12.5 15.5 15 12 17.5z"/>
+                    </svg>
+                    Refund Processing
+                </h2>
+                <p>All subscription payments and refunds are processed through our third-party payment processor, Gumroad. Refunds will be returned to your original form of payment used during subscription purchase.</p>
+
+                <h3>Processing Timeline</h3>
+                <ul>
+                    <li>Refund requests are reviewed within 5-7 business days</li>
+                    <li>Approved refunds are processed through Gumroad's system</li>
+                    <li>Refund credits typically appear within 5-10 business days</li>
+                    <li>Processing times may vary depending on your payment method and financial institution</li>
+                </ul>
+
+                <div class="highlight">
+                    <strong>Third-Party Processing:</strong> As all payments are managed through Gumroad, refund processing times and policies are subject to Gumroad's terms and payment processing capabilities.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                    How to Request a Refund
+                </h2>
+                <p>To request a refund for your NumSphere subscription, please follow these steps:</p>
+
+                <ul>
+                    <li><strong>Contact Support:</strong> Email our support team at support@numsphere.com</li>
+                    <li><strong>Include Information:</strong> Provide your account email, subscription details, and reason for refund</li>
+                    <li><strong>Verify Identity:</strong> We may require additional verification to process your request</li>
+                    <li><strong>Await Review:</strong> Our team will review your request and respond within 5-7 business days</li>
+                </ul>
+
+                <h3>Required Information</h3>
+                <p>When submitting a refund request, please include:</p>
+                <ul>
+                    <li>Your registered email address</li>
+                    <li>Subscription start date</li>
+                    <li>Gumroad transaction ID (if available)</li>
+                    <li>Detailed reason for refund request</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM4.64 6.64c.23-.5.49-.94.81-1.31L10.5 10.5 9 12l-4.36-5.36zM12 20c-4.41 0-8-3.59-8-8 0-.31.05-.6.14-.88L12 19.5v.5zm0-10.5l5.36-5.36c.32.37.58.81.81 1.31L14 12l1.5 1.5-7.36 7.36c-.32-.37-.58-.81-.81-1.31L12 9.5z"/>
+                    </svg>
+                    Non-Refundable Items
+                </h2>
+                <p>Certain items and circumstances are not eligible for refunds:</p>
+
+                <ul>
+                    <li>Subscriptions cancelled after the 30-day refund period</li>
+                    <li>Accounts terminated for Terms of Service violations</li>
+                    <li>Usage-based charges and overage fees</li>
+                    <li>Third-party service fees or charges</li>
+                    <li>Promotional or discounted subscriptions (unless otherwise specified)</li>
+                    <li>Accounts with fraudulent or abusive activity</li>
+                </ul>
+
+                <div class="warning-box">
+                    <strong>Important Note:</strong> Service usage during the refund period may affect eligibility. Excessive usage or clear abuse of our refund policy may result in denial of refund requests.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-1 16H9V7h9v14z"/>
+                    </svg>
+                    Limitation of Liability and Legal Protections
+                </h2>
+                <p>By requesting and accepting a refund from NumSphere, you acknowledge and agree to the following terms:</p>
+
+                <h3>Release of Claims</h3>
+                <p>Upon receipt of a refund, you agree to release and forever discharge NumSphere, its officers, directors, employees, agents, and affiliates from any and all claims, demands, damages, actions, or causes of action arising from or related to your use of our services during the refunded period.</p>
+
+                <h3>Limitation of Liability</h3>
+                <div class="highlight">
+                    <strong>Legal Protection:</strong> You expressly agree that you cannot and will not pursue any legal action, lawsuit, or claim against NumSphere for any damages, losses, or issues related to your subscription or use of services during the refunded period.
+                </div>
+
+                <h3>Waiver of Legal Rights</h3>
+                <p>By accepting a refund, you waive any right to:</p>
+                <ul>
+                    <li>File a lawsuit or legal claim against NumSphere</li>
+                    <li>Seek additional damages beyond the refunded amount</li>
+                    <li>Participate in class action lawsuits related to your refunded subscription</li>
+                    <li>Pursue claims in small claims court or arbitration proceedings</li>
+                    <li>Seek punitive, consequential, or incidental damages</li>
+                </ul>
+
+                <h3>Final Settlement</h3>
+                <p>The refund amount represents the full and final settlement of all claims related to your subscription. No additional compensation or damages will be provided under any circumstances.</p>
+
+                <div class="warning-box">
+                    <strong>Legal Acknowledgment:</strong> This refund policy includes binding legal protections. By requesting a refund, you agree to these terms and acknowledge that the refund serves as complete resolution of any disputes related to your subscription.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                    </svg>
+                    Policy Updates and Modifications
+                </h2>
+                <p>NumSphere reserves the right to modify this refund policy at any time. Changes will be effective immediately upon posting on our website. Continued use of our services after policy changes constitutes acceptance of the updated terms.</p>
+
+                <h3>Notification of Changes</h3>
+                <p>When significant changes are made to this policy, we will:</p>
+                <ul>
+                    <li>Update the "Last Modified" date at the top of this policy</li>
+                    <li>Send notification to active subscribers via email</li>
+                    <li>Post announcements on our service dashboard</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                    Contact Information
+                </h2>
+                <p>For refund requests or questions about this policy, please contact us:</p>
+
+                <div class="highlight">
+                    <strong>NumSphere Refund Support</strong><br>
+                    Email: support@numsphere.com<br>
+                    Subject Line: "Refund Request - [Your Account Email]"<br>
+                    Website: www.numsphere.com<br>
+                    Response Time: 5-7 business days
+                </div>
+
+                <p>Please note that refund requests submitted through other channels may experience delays in processing. Email is the preferred method for all refund-related inquiries.</p>
+            </div>
+
+            <a href="terms.html" class="back-button">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px;">
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                </svg>
+                Back to Terms of Service
+            </a>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2025 NumSphere. All rights reserved. | <a href="terms.html" style="color: #74b9ff;">Terms of Service</a> | <a href="privacy.html" style="color: #74b9ff;">Privacy Policy</a> | <a href="mailto:support@numsphere.com" style="color: #74b9ff;">Support</a></p>
+        </div>
+    </div>
+</body>
+</html>
