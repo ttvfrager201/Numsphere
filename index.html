@@ -1094,14 +1094,14 @@ input:focus + .input-icon, textarea:focus + .input-icon {
   }
 }
   </style>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-1V9JH211J0"></script>
-<script>
+<!-- Google Analytics (with CookieYes consent control) -->
+<script type="text/plain" cookie-consent="analytics" async src="https://www.googletagmanager.com/gtag/js?id=G-1V9JH211J0"></script>
+
+<script type="text/plain" cookie-consent="analytics">
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
-  gtag('config', 'G-1V9JH211J0');
+  gtag('config', 'G-1V9JH211J0', { 'anonymize_ip': true });
 </script>
 </head>
 <body>
