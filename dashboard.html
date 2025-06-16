@@ -550,6 +550,241 @@
         font-size: 1.5rem;
       }
     }
+    /* Account Settings Modal Styles - Add this CSS to your existing styles */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.modal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  transform: scale(0.9) translateY(30px);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay.show .modal {
+  transform: scale(1) translateY(0);
+}
+
+.modal-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  justify-content: between;
+  align-items: center;
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #151515;
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #666;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  margin-left: auto;
+}
+
+.close-btn:hover {
+  background: #f8f9fa;
+  color: #151515;
+}
+
+.modal-body {
+  padding: 0;
+}
+
+.tab-nav {
+  display: flex;
+  border-bottom: 1px solid #e9ecef;
+  background: #f8f9fa;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #666;
+  transition: all 0.2s ease;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-btn.active {
+  color: #4263eb;
+  background: white;
+  border-bottom-color: #4263eb;
+}
+
+.tab-btn:hover:not(.active) {
+  background: #e9ecef;
+  color: #151515;
+}
+
+.tab-content {
+  display: none;
+  padding: 2rem;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #151515;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #4263eb;
+  box-shadow: 0 0 0 3px rgba(66, 99, 235, 0.1);
+}
+
+.btn-primary {
+  background: #4263eb;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  margin-right: 0.5rem;
+}
+
+.btn-primary:hover {
+  background: #2f4bcf;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: #5a6268;
+}
+
+.alert-modal {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.alert-modal.success {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.alert-modal.error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.cancel-info {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  color: #856404;
+  padding: 1.5rem;
+  border-radius: 8px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.cancel-info h4 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #856404;
+}
+
+.support-email {
+  font-weight: 600;
+  color: #4263eb;
+  text-decoration: underline;
+}
+
+.loading-btn {
+  display: none;
+  margin-left: 8px;
+}
+
+.loading-btn.show {
+  display: inline-block;
+}
+
+.btn-spinner {
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
   </style>
 </head>
 <body>
@@ -620,7 +855,104 @@
       </div>
     </div>
   </main>
+<!-- Account Settings Modal - Add this HTML before the closing </body> tag -->
 
+<div id="accountSettingsModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Account Settings</h3>
+      <button class="close-btn" onclick="closeAccountSettings()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('email')">Change Email</button>
+        <button class="tab-btn" onclick="switchTab('name')">Change Name</button>
+        <button class="tab-btn" onclick="switchTab('password')">Change Password</button>
+        <button class="tab-btn" onclick="switchTab('cancel')">Cancel Subscription</button>
+      </div>
+      
+      <!-- Change Email Tab -->
+      <div id="email-tab" class="tab-content active">
+        <div id="emailAlert"></div>
+        <form id="changeEmailForm">
+          <div class="form-group">
+            <label class="form-label">Current Email</label>
+            <input type="email" id="currentEmail" class="form-input" readonly>
+          </div>
+          <div class="form-group">
+            <label class="form-label">New Email</label>
+            <input type="email" id="newEmail" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm New Email</label>
+            <input type="email" id="confirmEmail" class="form-input" required>
+          </div>
+          <button type="submit" class="btn-primary">
+            Update Email
+            <span class="loading-btn" id="emailLoading">
+              <span class="btn-spinner"></span>
+            </span>
+          </button>
+          <button type="button" class="btn-secondary" onclick="closeAccountSettings()">Cancel</button>
+        </form>
+      </div>
+      
+      <!-- Change Name Tab -->
+      <div id="name-tab" class="tab-content">
+        <div id="nameAlert"></div>
+        <form id="changeNameForm">
+          <div class="form-group">
+            <label class="form-label">Current Name</label>
+            <input type="text" id="currentName" class="form-input" readonly>
+          </div>
+          <div class="form-group">
+            <label class="form-label">New Name</label>
+            <input type="text" id="newName" class="form-input" required>
+          </div>
+          <button type="submit" class="btn-primary">
+            Update Name
+            <span class="loading-btn" id="nameLoading">
+              <span class="btn-spinner"></span>
+            </span>
+          </button>
+          <button type="button" class="btn-secondary" onclick="closeAccountSettings()">Cancel</button>
+        </form>
+      </div>
+      
+      <!-- Change Password Tab -->
+      <div id="password-tab" class="tab-content">
+        <div id="passwordAlert"></div>
+        <form id="changePasswordForm">
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" id="passwordEmail" class="form-input" readonly>
+          </div>
+          <p style="color: #666; font-size: 0.9rem; margin-bottom: 1.5rem;">
+            Click the button below to receive a secure password reset link via email.
+          </p>
+          <button type="submit" class="btn-primary">
+            Send Password Reset Link
+            <span class="loading-btn" id="passwordLoading">
+              <span class="btn-spinner"></span>
+            </span>
+          </button>
+          <button type="button" class="btn-secondary" onclick="closeAccountSettings()">Cancel</button>
+        </form>
+      </div>
+      
+      <!-- Cancel Subscription Tab -->
+      <div id="cancel-tab" class="tab-content">
+        <div class="cancel-info">
+          <h4>Cancel Subscription</h4>
+          <p>To cancel your subscription and discontinue service, please contact our support team directly.</p>
+          <p>Email: <span class="support-email">support@numsphere.online</span></p>
+          <p>Our team will process your cancellation request and provide you with confirmation within 24 hours.</p>
+        </div>
+        <button type="button" class="btn-secondary" onclick="closeAccountSettings()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
   <script>
     // Create floating particles
     function createParticles() {
@@ -791,7 +1123,261 @@ window.addEventListener('pageshow', function(event) {
     window.location.reload();
   }
 });
+// Account Settings JavaScript Functions - Add these to your existing script section
 
+// Update the showFeature function to handle the settings button
+function showFeature(feature) {
+  if (feature === 'settings') {
+    showAccountSettings();
+  } else {
+    alert(`${feature} feature will be implemented in the next update!`);
+  }
+}
+
+// Show account settings modal
+function showAccountSettings() {
+  const modal = document.getElementById('accountSettingsModal');
+  
+  // Populate current user info
+  populateCurrentUserInfo();
+  
+  // Show modal
+  modal.classList.add('show');
+  
+  // Prevent body scroll
+  document.body.style.overflow = 'hidden';
+}
+
+// Close account settings modal
+function closeAccountSettings() {
+  const modal = document.getElementById('accountSettingsModal');
+  modal.classList.remove('show');
+  
+  // Restore body scroll
+  document.body.style.overflow = '';
+  
+  // Clear any alerts
+  clearAllAlerts();
+  
+  // Reset forms
+  document.getElementById('changeEmailForm').reset();
+  document.getElementById('changeNameForm').reset();
+  document.getElementById('changePasswordForm').reset();
+}
+
+// Switch between tabs
+function switchTab(tabName) {
+  // Hide all tabs
+  const tabs = document.querySelectorAll('.tab-content');
+  tabs.forEach(tab => tab.classList.remove('active'));
+  
+  // Remove active class from all buttons
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  tabBtns.forEach(btn => btn.classList.remove('active'));
+  
+  // Show selected tab
+  document.getElementById(tabName + '-tab').classList.add('active');
+  
+  // Add active class to clicked button
+  event.target.classList.add('active');
+  
+  // Clear alerts when switching tabs
+  clearAllAlerts();
+}
+
+// Populate current user information
+function populateCurrentUserInfo() {
+  const userEmail = sessionStorage.getItem('userEmail');
+  const userName = sessionStorage.getItem('userName');
+  
+  document.getElementById('currentEmail').value = userEmail || '';
+  document.getElementById('currentName').value = userName || 'Not provided';
+  document.getElementById('passwordEmail').value = userEmail || '';
+}
+
+// Show alert in modal
+function showModalAlert(containerId, message, type) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = `<div class="alert-modal ${type}">${message}</div>`;
+}
+
+// Clear all alerts
+function clearAllAlerts() {
+  document.getElementById('emailAlert').innerHTML = '';
+  document.getElementById('nameAlert').innerHTML = '';
+  document.getElementById('passwordAlert').innerHTML = '';
+}
+
+// Set loading state for buttons
+function setButtonLoading(buttonId, loadingId, isLoading) {
+  const button = document.querySelector(`#${buttonId.replace('Form', 'Form')} button[type="submit"]`);
+  const loading = document.getElementById(loadingId);
+  
+  button.disabled = isLoading;
+  loading.classList.toggle('show', isLoading);
+}
+
+// Handle form submissions
+document.addEventListener('DOMContentLoaded', function() {
+  // Change Email Form
+  document.getElementById('changeEmailForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const newEmail = document.getElementById('newEmail').value.trim();
+    const confirmEmail = document.getElementById('confirmEmail').value.trim();
+    
+    if (newEmail !== confirmEmail) {
+      showModalAlert('emailAlert', 'Email addresses do not match.', 'error');
+      return;
+    }
+    
+    if (newEmail === sessionStorage.getItem('userEmail')) {
+      showModalAlert('emailAlert', 'New email must be different from current email.', 'error');
+      return;
+    }
+    
+    setButtonLoading('changeEmailForm', 'emailLoading', true);
+    
+    try {
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlercoded',
+        },
+        body: new URLSearchParams({
+          action: 'change_email',
+          current_email: sessionStorage.getItem('userEmail'),
+          new_email: newEmail
+        })
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        showModalAlert('emailAlert', 'Email updated successfully! Please log in again with your new email.', 'success');
+        // Update session storage
+        sessionStorage.setItem('userEmail', newEmail);
+        // Auto-logout after 3 seconds
+        setTimeout(() => {
+          logoutUser();
+        }, 3000);
+      } else {
+        showModalAlert('emailAlert', result.message || 'Failed to update email.', 'error');
+      }
+    } catch (error) {
+      console.error('Email change error:', error);
+      showModalAlert('emailAlert', 'Server error. Please try again.', 'error');
+    } finally {
+      setButtonLoading('changeEmailForm', 'emailLoading', false);
+    }
+  });
+  
+  // Change Name Form
+  document.getElementById('changeNameForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const newName = document.getElementById('newName').value.trim();
+    
+    if (!newName) {
+      showModalAlert('nameAlert', 'Please enter a valid name.', 'error');
+      return;
+    }
+    
+    if (newName === sessionStorage.getItem('userName')) {
+      showModalAlert('nameAlert', 'New name must be different from current name.', 'error');
+      return;
+    }
+    
+    setButtonLoading('changeNameForm', 'nameLoading', true);
+    
+    try {
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          action: 'change_name',
+          email: sessionStorage.getItem('userEmail'),
+          new_name: newName
+        })
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        showModalAlert('nameAlert', 'Name updated successfully!', 'success');
+        // Update session storage
+        sessionStorage.setItem('userName', newName);
+        // Update UI
+        document.getElementById('userName').textContent = newName;
+        document.getElementById('currentName').value = newName;
+        // Clear form
+        document.getElementById('newName').value = '';
+      } else {
+        showModalAlert('nameAlert', result.message || 'Failed to update name.', 'error');
+      }
+    } catch (error) {
+      console.error('Name change error:', error);
+      showModalAlert('nameAlert', 'Server error. Please try again.', 'error');
+    } finally {
+      setButtonLoading('changeNameForm', 'nameLoading', false);
+    }
+  });
+  
+  // Change Password Form (Send Reset Link)
+  document.getElementById('changePasswordForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const email = sessionStorage.getItem('userEmail');
+    
+    setButtonLoading('changePasswordForm', 'passwordLoading', true);
+    
+    try {
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          action: 'forgot_password',
+          email: email
+        })
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        showModalAlert('passwordAlert', 'Password reset link sent to your email! Check your inbox.', 'success');
+      } else {
+        showModalAlert('passwordAlert', result.message || 'Failed to send reset link.', 'error');
+      }
+    } catch (error) {
+      console.error('Password reset error:', error);
+      showModalAlert('passwordAlert', 'Server error. Please try again.', 'error');
+    } finally {
+      setButtonLoading('changePasswordForm', 'passwordLoading', false);
+    }
+  });
+});
+
+// Close modal when clicking outside
+document.addEventListener('click', function(e) {
+  const modal = document.getElementById('accountSettingsModal');
+  if (e.target === modal) {
+    closeAccountSettings();
+  }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('accountSettingsModal');
+    if (modal.classList.contains('show')) {
+      closeAccountSettings();
+    }
+  }
+});
   </script>
 </body>
 </html>
