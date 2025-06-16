@@ -216,6 +216,23 @@
       color: #856404;
       font-weight: 600;
     }
+    .reset-suggestion {
+      background: #e7f3ff;
+      border: 1px solid #4263eb;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+      color: #0c5460;
+      font-size: 0.9rem;
+    }
+    .reset-suggestion a {
+      color: #4263eb;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .reset-suggestion a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -255,6 +272,10 @@
 
     <button type="button" class="secondary-btn" onclick="goHome()">Back to Home</button>
 
+    <div id="resetSuggestion" class="reset-suggestion" style="display: none;">
+      🔓 For immediate access, you can <a href="ResetPassword.html">reset your password</a> or wait for the lockout to expire.
+    </div>
+
     <div class="security-notice">
       🔒 Your account is protected by advanced security measures. Multiple failed login attempts will result in temporary account lockout.
     </div>
@@ -263,79 +284,15 @@
 <script>
     const GOOGLE_APPS_SCRIPT_URL = 'https://numsphere-proxy.onrender.com';
     
-    // 🔒 Security tracking
-    let failedAttempts = 0;
+    // Server-side lockout tracking
     let isBlocked = false;
     let blockEndTime = null;
-    let rateLimited = false;
     
-    // 🔒 Get stored failed attempts from sessionStorage
-    function getStoredAttempts() {
-        try {
-            const stored = sessionStorage.getItem('loginAttempts');
-            if (stored) {
-                const data = JSON.parse(stored);
-                const now = Date.now();
-                // Reset if more than 1 hour has passed
-                if (now - data.timestamp > 60 * 60 * 1000) {
-                    sessionStorage.removeItem('loginAttempts');
-                    return 0;
-                }
-                return data.count || 0;
-            }
-        } catch (e) {
-            console.warn('Error reading stored attempts:', e);
-        }
-        return 0;
-    }
-    
-    // 🔒 Store failed attempts in sessionStorage
-    function storeAttempts(count) {
-        try {
-            sessionStorage.setItem('loginAttempts', JSON.stringify({
-                count: count,
-                timestamp: Date.now()
-            }));
-        } catch (e) {
-            console.warn('Error storing attempts:', e);
-        }
-    }
-    
-    // 🔒 Check if user is in client-side cooldown
-    function checkCooldown() {
-        try {
-            const cooldown = sessionStorage.getItem('loginCooldown');
-            if (cooldown) {
-                const endTime = parseInt(cooldown);
-                const now = Date.now();
-                if (now < endTime) {
-                    return endTime;
-                } else {
-                    sessionStorage.removeItem('loginCooldown');
-                }
-            }
-        } catch (e) {
-            console.warn('Error checking cooldown:', e);
-        }
-        return null;
-    }
-    
-    // 🔒 Set client-side cooldown
-    function setCooldown(minutes) {
-        try {
-            const endTime = Date.now() + (minutes * 60 * 1000);
-            sessionStorage.setItem('loginCooldown', endTime.toString());
-            return endTime;
-        } catch (e) {
-            console.warn('Error setting cooldown:', e);
-            return null;
-        }
-    }
-    
-    // 🔒 Update cooldown timer display
+    // Update cooldown timer display (server enforced - 6 minutes)
     function updateCooldownTimer(endTime) {
         const timer = document.getElementById('cooldownTimer');
         const loginBtn = document.getElementById('loginBtn');
+        const resetSuggestion = document.getElementById('resetSuggestion');
         
         const updateDisplay = () => {
             const now = Date.now();
@@ -343,6 +300,7 @@
             
             if (remaining <= 0) {
                 timer.style.display = 'none';
+                resetSuggestion.style.display = 'none';
                 loginBtn.disabled = false;
                 isBlocked = false;
                 blockEndTime = null;
@@ -357,6 +315,7 @@
                 <br><small>This is a security measure to protect your account.</small>
             `;
             timer.style.display = 'block';
+            resetSuggestion.style.display = 'block';
             loginBtn.disabled = true;
             isBlocked = true;
             blockEndTime = endTime;
@@ -367,7 +326,7 @@
         updateDisplay();
     }
 
-    // 🔒 Show alert messages
+    // Show alert messages
     function showAlert(message, type) {
         const alertContainer = document.getElementById('alertContainer');
         alertContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
@@ -380,13 +339,13 @@
         }
     }
 
-    // 🔒 Email validation
+    // Email validation
     function isValidEmail(email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     }
 
-    // 🔒 Set loading state
+    // Set loading state
     function setLoadingState(loading) {
         const loginBtn = document.getElementById('loginBtn');
         const loadingSpinner = document.getElementById('loadingSpinner');
@@ -395,7 +354,7 @@
             loginBtn.disabled = true;
             loadingSpinner.classList.add('show');
         } else {
-            loginBtn.disabled = false;
+            loginBtn.disabled = isBlocked; // Only enable if not blocked by server
             loadingSpinner.classList.remove('show');
         }
     }
@@ -409,23 +368,14 @@
         const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('password');
         const loginBtn = document.getElementById('loginBtn');
-        const loadingSpinner = document.getElementById('loadingSpinner');
         const alertContainer = document.getElementById('alertContainer');
-        
-        // Initialize security state
-        failedAttempts = getStoredAttempts();
-        const cooldownEnd = checkCooldown();
-        
-        if (cooldownEnd) {
-            updateCooldownTimer(cooldownEnd);
-        }
 
         loginForm.addEventListener('submit', async function (e) {
             e.preventDefault();
 
-            // Check if blocked
+            // Check if blocked by server
             if (isBlocked && blockEndTime && Date.now() < blockEndTime) {
-                showAlert('Please wait for the cooldown period to end.', 'warning');
+                showAlert('Please wait for the cooldown period to end or reset your password for immediate access.', 'warning');
                 return;
             }
 
@@ -439,14 +389,6 @@
 
             if (!isValidEmail(email)) {
                 showAlert('Please enter a valid email address', 'error');
-                return;
-            }
-
-            // 🔒 Client-side rate limiting check
-            if (failedAttempts >= 5) {
-                const cooldownEnd = setCooldown(15); // 15 minute cooldown
-                updateCooldownTimer(cooldownEnd);
-                showAlert('Too many failed attempts. Please wait before trying again.', 'error');
                 return;
             }
 
@@ -476,7 +418,6 @@
                 if (!response.ok) {
                     // Handle different HTTP status codes
                     if (response.status === 429) {
-                        rateLimited = true;
                         throw new Error('Too many requests. Please try again later.');
                     } else if (response.status === 403) {
                         throw new Error('Access denied. Please try again later.');
@@ -488,21 +429,16 @@
                 const result = await response.json();
                 console.log('Login result:', result);
 
-                // 🔒 Handle server-side rate limiting
+                // Handle server-side rate limiting/blocking
                 if (result.rateLimited || result.blocked) {
-                    rateLimited = true;
-                    const cooldownEnd = setCooldown(result.rateLimited ? 15 : 60);
+                    // Server enforces 6-minute lockout, so we calculate based on that
+                    const cooldownEnd = Date.now() + (6 * 60 * 60 * 1000); // 6 minutes
                     updateCooldownTimer(cooldownEnd);
                     showAlert(result.message || 'Too many attempts. Please try again later.', 'error');
                     return;
                 }
 
                 if (result.success) {
-                    // 🔒 Reset attempt counters on success
-                    failedAttempts = 0;
-                    storeAttempts(0);
-                    sessionStorage.removeItem('loginCooldown');
-                    
                     // Store user data
                     sessionStorage.setItem('userEmail', email);
                     sessionStorage.setItem('isAuthenticated', 'true');
@@ -526,21 +462,12 @@
                        }, 1500);
                     }
                 } else {
-                    // 🔒 Handle failed login
-                    failedAttempts++;
-                    storeAttempts(failedAttempts);
-                    
+                    // Server handles failed login tracking and provides attempt count
                     let message = result.message || 'Login failed. Please check your credentials.';
                     
-                    // Show remaining attempts warning
-                    if (failedAttempts >= 3 && failedAttempts < 5) {
-                        const remaining = 5 - failedAttempts;
-                        message += ` ${remaining} attempt(s) remaining before temporary lockout.`;
-                        showAlert(message, 'warning');
-                    } else if (failedAttempts >= 5) {
-                        const cooldownEnd = setCooldown(15);
-                        updateCooldownTimer(cooldownEnd);
-                        showAlert('Maximum attempts exceeded. Please wait before trying again.', 'error');
+                    // Check if message includes attempt count info
+                    if (message.includes('attempts remaining')) {
+                        showAlert(message + ' For immediate access, you can reset your password.', 'warning');
                     } else {
                         showAlert(message, 'error');
                     }
@@ -550,13 +477,7 @@
                 
                 if (error.name === 'AbortError') {
                     showAlert('Request timed out. Please check your connection and try again.', 'error');
-                } else if (rateLimited) {
-                    // Don't increment failed attempts for rate limiting
-                    showAlert('Too many requests. Please try again later.', 'error');
                 } else {
-                    // Increment failed attempts for actual errors
-                    failedAttempts++;
-                    storeAttempts(failedAttempts);
                     showAlert(error.message || 'Network error. Please try again.', 'error');
                 }
             } finally {
@@ -564,7 +485,7 @@
             }
         });
 
-        // 🔒 Prevent form submission while blocked
+        // Prevent form submission while blocked
         loginForm.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && (isBlocked || loginBtn.disabled)) {
                 e.preventDefault();
@@ -572,16 +493,14 @@
             }
         });
 
-        // 🔒 Clear alerts when user starts typing
+        // Clear alerts when user starts typing
         emailInput.addEventListener('input', () => {
-            const alertContainer = document.getElementById('alertContainer');
             if (alertContainer.innerHTML) {
                 alertContainer.innerHTML = '';
             }
         });
 
         passwordInput.addEventListener('input', () => {
-            const alertContainer = document.getElementById('alertContainer');
             if (alertContainer.innerHTML) {
                 alertContainer.innerHTML = '';
             }
