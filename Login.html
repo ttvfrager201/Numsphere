@@ -434,7 +434,7 @@
                     // Server enforces 6-minute lockout, so we calculate based on that
                     const cooldownEnd = Date.now() + (6 * 60 * 60 * 1000); // 6 minutes
                     updateCooldownTimer(cooldownEnd);
-                    showAlert(result.message || 'Too many attempts. Please try again later.', 'error');
+                    showAlert(result.message || 'Too many attempts. Ip Has Been Blocked any login request will be blocked for current time any other login for another account will be denied Please try again later.', 'error');
                     return;
                 }
 
