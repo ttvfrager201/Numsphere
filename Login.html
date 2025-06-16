@@ -277,18 +277,18 @@
     </div>
 
     <div class="security-notice">
-      🔒 Your account is protected by security measures. Multiple failed login attempts for the same email will result in temporary email lockout (30 minutes).
+      🔒 Your account is protected by advanced security measures. Multiple failed login attempts will result in temporary account lockout.
     </div>
   </div>
 
 <script>
     const GOOGLE_APPS_SCRIPT_URL = 'https://numsphere-proxy.onrender.com';
     
-    // Email-based lockout tracking (simplified)
+    // Server-side lockout tracking
     let isBlocked = false;
     let blockEndTime = null;
     
-    // Update cooldown timer display (30 minutes for email lockout)
+    // Update cooldown timer display (server enforced - 6 minutes)
     function updateCooldownTimer(endTime) {
         const timer = document.getElementById('cooldownTimer');
         const loginBtn = document.getElementById('loginBtn');
@@ -311,8 +311,8 @@
             const seconds = Math.floor((remaining % 60000) / 1000);
             
             timer.innerHTML = `
-                ⏱️ This email is temporarily locked. Try again in ${minutes}m ${seconds}s
-                <br><small>This email had too many failed login attempts.</small>
+                ⏱️ Login temporarily disabled. Try again in ${minutes}m ${seconds}s
+                <br><small>This is a security measure to protect your account.</small>
             `;
             timer.style.display = 'block';
             resetSuggestion.style.display = 'block';
@@ -354,7 +354,7 @@
             loginBtn.disabled = true;
             loadingSpinner.classList.add('show');
         } else {
-            loginBtn.disabled = isBlocked; // Only enable if not blocked
+            loginBtn.disabled = isBlocked; // Only enable if not blocked by server
             loadingSpinner.classList.remove('show');
         }
     }
@@ -373,7 +373,7 @@
         loginForm.addEventListener('submit', async function (e) {
             e.preventDefault();
 
-            // Check if blocked
+            // Check if blocked by server
             if (isBlocked && blockEndTime && Date.now() < blockEndTime) {
                 showAlert('Please wait for the cooldown period to end or reset your password for immediate access.', 'warning');
                 return;
@@ -429,12 +429,12 @@
                 const result = await response.json();
                 console.log('Login result:', result);
 
-                // Handle email-based blocking
-                if (result.blocked) {
-                    // Email is blocked for 30 minutes
-                    const cooldownEnd = Date.now() + (30 * 60 * 1000); // 30 minutes
+                // Handle server-side rate limiting/blocking
+                if (result.rateLimited || result.blocked) {
+                    // Server enforces 6-minute lockout, so we calculate based on that
+                    const cooldownEnd = Date.now() + (6 * 60 * 60 * 1000); // 6 minutes
                     updateCooldownTimer(cooldownEnd);
-                    showAlert(result.message || 'This email is temporarily blocked due to too many failed attempts.', 'error');
+                    showAlert(result.message || 'Too many attempts. Ip Has Been Blocked any login request will be blocked for current time any other login for another account will be denied Please try again later.', 'error');
                     return;
                 }
 
@@ -462,12 +462,12 @@
                        }, 1500);
                     }
                 } else {
-                    // Handle failed login
+                    // Server handles failed login tracking and provides attempt count
                     let message = result.message || 'Login failed. Please check your credentials.';
                     
                     // Check if message includes attempt count info
                     if (message.includes('attempts remaining')) {
-                        showAlert(message, 'warning');
+                        showAlert(message + ' For immediate access, you can reset your password.', 'warning');
                     } else {
                         showAlert(message, 'error');
                     }
