@@ -8,17 +8,7 @@
   <meta http-equiv="Expires" content="0">
   <link rel="icon" type="image/x-icon" href="https://i.imgur.com/E4FIiRK.png">
   <title>Loading - NumSphere</title>
-  <!-- Start cookieyes banner --> <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/217794c202a597d4183fff87/script.js"></script> <!-- End cookieyes banner -->
- <!-- Google Analytics (with CookieYes consent control) -->
-<script type="text/plain" cookie-consent="analytics" async src="https://www.googletagmanager.com/gtag/js?id=G-1V9JH211J0"></script>
-
-<script type="text/plain" cookie-consent="analytics">
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-1V9JH211J0', { 'anonymize_ip': true });
-</script>
-
+  
   <style>
     * {
       margin: 0;
@@ -42,6 +32,8 @@
       text-align: center;
       z-index: 10;
       position: relative;
+      max-width: 400px;
+      padding: 2rem;
     }
     
     .logo {
@@ -86,16 +78,12 @@
       animation: textFade 1.5s ease-in-out infinite alternate;
     }
     
-    .loading-svg {
-      margin-bottom: 2rem;
-      animation: svgFloat 3s ease-in-out infinite;
-    }
-    
     .progress-container {
-      width: 300px;
-      height: 6px;
+      width: 100%;
+      max-width: 300px;
+      height: 8px;
       background: rgba(255, 255, 255, 0.2);
-      border-radius: 3px;
+      border-radius: 4px;
       margin: 2rem auto;
       overflow: hidden;
       position: relative;
@@ -104,9 +92,9 @@
     .progress-bar {
       height: 100%;
       background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1);
-      border-radius: 3px;
+      border-radius: 4px;
       width: 0%;
-      transition: width 0.3s ease;
+      transition: width 0.5s ease;
       position: relative;
     }
     
@@ -122,11 +110,56 @@
     }
     
     .loading-message {
-      font-size: 0.9rem;
-      opacity: 0.8;
+      font-size: 0.95rem;
+      opacity: 0.85;
       margin-top: 1rem;
-      min-height: 20px;
+      min-height: 24px;
+      line-height: 1.4;
     }
+    
+    .error-container {
+      background: rgba(255, 107, 107, 0.1);
+      border: 1px solid rgba(255, 107, 107, 0.3);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+      display: none;
+    }
+    
+    .error-message {
+      color: #ff6b6b;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .retry-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+    }
+    
+    .retry-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
+    
+    .status-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 8px;
+      animation: statusPulse 1.5s ease-in-out infinite;
+    }
+    
+    .status-loading { background: #4ecdc4; }
+    .status-success { background: #45b7d1; }
+    .status-error { background: #ff6b6b; }
     
     .particles {
       position: absolute;
@@ -146,64 +179,8 @@
       animation: particleFloat 4s linear infinite;
     }
     
-    .orb {
-      position: absolute;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-      animation: orbFloat 8s ease-in-out infinite;
-    }
-    
-    .orb1 {
-      width: 200px;
-      height: 200px;
-      top: 10%;
-      left: 10%;
-      animation-delay: 0s;
-    }
-    
-    .orb2 {
-      width: 150px;
-      height: 150px;
-      top: 60%;
-      right: 15%;
-      animation-delay: -2s;
-    }
-    
-    .orb3 {
-      width: 100px;
-      height: 100px;
-      bottom: 20%;
-      left: 20%;
-      animation-delay: -4s;
-    }
-    
-    /* Pulsing circle animations */
-    .pulse-ring {
-      animation: pulseRing 2s ease-in-out infinite;
-    }
-    
-    .pulse-ring-delayed {
-      animation: pulseRing 2s ease-in-out infinite;
-      animation-delay: 1s;
-    }
-    
-    .circuit-path {
-      stroke-dasharray: 10;
-      animation: circuitFlow 3s linear infinite;
-    }
-    
-    .circuit-path-reverse {
-      stroke-dasharray: 8;
-      animation: circuitFlow 2s linear infinite reverse;
-    }
-    
-    .data-node {
-      animation: dataNodePulse 2s ease-in-out infinite;
-    }
-    
-    .connection-line {
-      stroke-dasharray: 4;
-      animation: connectionPulse 1s linear infinite;
+    .fade-out {
+      animation: fadeOut 0.8s ease-in-out forwards;
     }
     
     @keyframes logoGlow {
@@ -226,11 +203,6 @@
       100% { opacity: 1; }
     }
     
-    @keyframes svgFloat {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
-    
     @keyframes progressShimmer {
       0% { transform: translateX(-100%); }
       100% { transform: translateX(100%); }
@@ -241,106 +213,33 @@
         transform: translateY(100vh) translateX(0);
         opacity: 0;
       }
-      10% {
-        opacity: 1;
-      }
-      90% {
-        opacity: 1;
-      }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
       100% {
         transform: translateY(-100px) translateX(100px);
         opacity: 0;
       }
     }
     
-    @keyframes orbFloat {
-      0%, 100% {
-        transform: translateY(0px) translateX(0px);
-      }
-      25% {
-        transform: translateY(-20px) translateX(20px);
-      }
-      50% {
-        transform: translateY(-10px) translateX(-10px);
-      }
-      75% {
-        transform: translateY(-30px) translateX(15px);
-      }
-    }
-    
-    @keyframes pulseRing {
-      0% { 
-        r: 50; 
-        opacity: 1; 
-      }
-      100% { 
-        r: 55; 
-        opacity: 0.3; 
-      }
-    }
-    
-    @keyframes circuitFlow {
-      0% { stroke-dashoffset: 0; }
-      100% { stroke-dashoffset: -50; }
-    }
-    
-    @keyframes dataNodePulse {
-      0%, 100% { 
-        fill: #4ecdc4; 
-        r: 8;
-      }
-      50% { 
-        fill: #ff6b6b; 
-        r: 12;
-      }
-    }
-    
-    @keyframes connectionPulse {
-      0% { stroke-dashoffset: 0; opacity: 1; }
-      25% { opacity: 0.7; }
-      50% { stroke-dashoffset: -8; opacity: 1; }
-      75% { opacity: 0.7; }
-      100% { stroke-dashoffset: -16; opacity: 1; }
-    }
-    
-    .fade-out {
-      animation: fadeOut 0.8s ease-in-out forwards;
+    @keyframes statusPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
     
     @keyframes fadeOut {
       0% { opacity: 1; transform: scale(1); }
-      100% { opacity: 0; transform: scale(0.9); }
-    }
-    
-    .slide-up {
-      animation: slideUp 0.6s ease-out forwards;
-    }
-    
-    @keyframes slideUp {
-      0% { transform: translateY(0); opacity: 1; }
-      100% { transform: translateY(-50px); opacity: 0; }
+      100% { opacity: 0; transform: scale(0.95); }
     }
 
     @media (max-width: 480px) {
-      .logo {
-        font-size: 2rem;
-      }
-      .progress-container {
-        width: 250px;
-      }
-      .loading-svg svg {
-        width: 100px;
-        height: 100px;
-      }
+      .logo { font-size: 2rem; }
+      .loading-container { padding: 1rem; }
+      .progress-container { max-width: 250px; }
     }
   </style>
 </head>
 <body>
   <div class="particles" id="particles"></div>
-  
-  <div class="orb orb1"></div>
-  <div class="orb orb2"></div>
-  <div class="orb orb3"></div>
   
   <div class="loading-container" id="loadingContainer">
     <div class="logo">
@@ -350,66 +249,44 @@
       NumSphere
     </div>
     
-    <div class="loading-text">Preparing your dashboard...</div>
-    
-    <div class="loading-svg">
-      <svg width="120" height="120" viewBox="0 0 120 120">
-        <!-- Outer pulsing rings -->
-        <circle cx="60" cy="60" class="pulse-ring" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
-        
-        <!-- Circuit paths using CSS animations -->
-        <path d="M60,10 Q80,30 100,60 Q80,90 60,110 Q40,90 20,60 Q40,30 60,10" 
-              fill="none" stroke="#4ecdc4" stroke-width="2" 
-              class="circuit-path"/>
-        
-        <path d="M10,60 Q30,40 60,20 Q90,40 110,60 Q90,80 60,100 Q30,80 10,60" 
-              fill="none" stroke="#ff6b6b" stroke-width="2" 
-              class="circuit-path-reverse"/>
-        
-        <!-- Central node -->
-        <circle cx="60" cy="60" class="data-node" fill="#4ecdc4"/>
-        
-        <!-- Corner nodes -->
-        <circle cx="30" cy="30" r="4" fill="#45b7d1" class="data-node" style="animation-delay: 0.5s;"/>
-        <circle cx="90" cy="30" r="4" fill="#45b7d1" class="data-node" style="animation-delay: 1s;"/>
-        <circle cx="90" cy="90" r="4" fill="#45b7d1" class="data-node" style="animation-delay: 1.5s;"/>
-        <circle cx="30" cy="90" r="4" fill="#45b7d1" class="data-node" style="animation-delay: 2s;"/>
-        
-        <!-- Connection lines -->
-        <line x1="30" y1="30" x2="60" y2="60" stroke="rgba(255,255,255,0.6)" stroke-width="1" 
-              class="connection-line"/>
-        <line x1="90" y1="30" x2="60" y2="60" stroke="rgba(255,255,255,0.6)" stroke-width="1" 
-              class="connection-line" style="animation-delay: 0.25s;"/>
-        <line x1="90" y1="90" x2="60" y2="60" stroke="rgba(255,255,255,0.6)" stroke-width="1" 
-              class="connection-line" style="animation-delay: 0.5s;"/>
-        <line x1="30" y1="90" x2="60" y2="60" stroke="rgba(255,255,255,0.6)" stroke-width="1" 
-              class="connection-line" style="animation-delay: 0.75s;"/>
-      </svg>
-    </div>
+    <div class="loading-text">Connecting to NumSphere...</div>
     
     <div class="progress-container">
       <div class="progress-bar" id="progressBar"></div>
     </div>
     
-    <div class="loading-message" id="loadingMessage">Initializing...</div>
+    <div class="loading-message" id="loadingMessage">
+      <span class="status-indicator status-loading" id="statusIndicator"></span>
+      <span id="messageText">Initializing connection...</span>
+    </div>
+    
+    <div class="error-container" id="errorContainer">
+      <div class="error-message" id="errorMessage"></div>
+      <button class="retry-btn" id="retryBtn" onclick="retryConnection()">Retry Connection</button>
+    </div>
   </div>
 
   <script>
     (function() {
       'use strict';
 
-      console.log('Loading screen initialized');
+      // Configuration
+      const CONFIG = {
+        API_BASE_URL: 'https://numsphere-proxy.onrender.com', // Replace with your actual API
+        TIMEOUT: 10000, // 10 seconds
+        MAX_RETRIES: 3
+      };
+
+      let currentRetries = 0;
+      let loadingSteps = [];
+      let currentStepIndex = 0;
 
       // Create floating particles
       function createParticles() {
         const particlesContainer = document.getElementById('particles');
-        if (!particlesContainer) {
-          console.error('Particles container not found');
-          return;
-        }
+        if (!particlesContainer) return;
         
-        const particleCount = 15;
-        
+        const particleCount = 12;
         for (let i = 0; i < particleCount; i++) {
           const particle = document.createElement('div');
           particle.className = 'particle';
@@ -418,134 +295,302 @@
           particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
           particlesContainer.appendChild(particle);
         }
-        console.log('Particles created:', particleCount);
       }
 
-      // Progress simulation
-      function simulateProgress() {
+      // Update UI elements
+      function updateProgress(percentage, message, status = 'loading') {
         const progressBar = document.getElementById('progressBar');
-        const loadingMessage = document.getElementById('loadingMessage');
+        const messageText = document.getElementById('messageText');
+        const statusIndicator = document.getElementById('statusIndicator');
         
-        if (!progressBar || !loadingMessage) {
-          console.error('Progress elements not found');
-          return;
+        if (progressBar) progressBar.style.width = percentage + '%';
+        if (messageText) messageText.textContent = message;
+        if (statusIndicator) {
+          statusIndicator.className = `status-indicator status-${status}`;
         }
+        
+        console.log(`Progress: ${percentage}% - ${message}`);
+      }
+
+      // Show error
+      function showError(message, canRetry = true) {
+        const errorContainer = document.getElementById('errorContainer');
+        const errorMessage = document.getElementById('errorMessage');
+        const retryBtn = document.getElementById('retryBtn');
+        
+        if (errorMessage) errorMessage.textContent = message;
+        if (errorContainer) errorContainer.style.display = 'block';
+        if (retryBtn) retryBtn.style.display = canRetry ? 'block' : 'none';
+        
+        updateProgress(0, 'Connection failed', 'error');
+      }
+
+      // Hide error
+      function hideError() {
+        const errorContainer = document.getElementById('errorContainer');
+        if (errorContainer) errorContainer.style.display = 'none';
+      }
+
+      // API call wrapper with timeout
+      async function apiCall(url, options = {}) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), CONFIG.TIMEOUT);
+        
+        try {
+          const response = await fetch(url, {
+            ...options,
+            signal: controller.signal,
+            headers: {
+              'Content-Type': 'application/json',
+              ...options.headers
+            }
+          });
+          
+          clearTimeout(timeoutId);
+          
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+          
+          return await response.json();
+        } catch (error) {
+          clearTimeout(timeoutId);
+          if (error.name === 'AbortError') {
+            throw new Error('Request timeout - please check your connection');
+          }
+          throw error;
+        }
+      }
+
+      // Check server status
+      async function checkServerStatus() {
+        updateProgress(10, 'Checking server status...', 'loading');
+        
+        try {
+          // For demo purposes, we'll simulate a server check
+          // Replace this with your actual health check endpoint
+          const response = await new Promise((resolve, reject) => {
+            setTimeout(() => {
+              // Simulate server response
+              if (Math.random() > 0.1) { // 90% success rate
+                resolve({ status: 'ok', timestamp: Date.now() });
+              } else {
+                reject(new Error('Server temporarily unavailable'));
+              }
+            }, 1000 + Math.random() * 2000);
+          });
+          
+          updateProgress(25, 'Server connection established', 'success');
+          return response;
+          
+        } catch (error) {
+          throw new Error(`Server check failed: ${error.message}`);
+        }
+      }
+
+      // Validate authentication
+      async function validateAuthentication() {
+        updateProgress(40, 'Validating authentication...', 'loading');
+        
+        const authToken = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
+        const userEmail = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
+        
+        if (!authToken || !userEmail) {
+          throw new Error('No valid authentication found');
+        }
+        
+        try {
+          // Simulate auth validation
+          const response = await new Promise((resolve, reject) => {
+            setTimeout(() => {
+              // Simulate auth validation
+              if (authToken && userEmail) {
+                resolve({ 
+                  valid: true, 
+                  user: { email: userEmail, verified: true },
+                  permissions: ['dashboard', 'analytics']
+                });
+              } else {
+                reject(new Error('Invalid authentication credentials'));
+              }
+            }, 1500);
+          });
+          
+          if (!response.valid) {
+            throw new Error('Authentication validation failed');
+          }
+          
+          updateProgress(60, 'Authentication verified', 'success');
+          return response;
+          
+        } catch (error) {
+          throw new Error(`Auth validation failed: ${error.message}`);
+        }
+      }
+
+      // Load user data
+      async function loadUserData() {
+        updateProgress(70, 'Loading user profile...', 'loading');
+        
+        try {
+          // Simulate loading user data
+          const userData = await new Promise((resolve) => {
+            setTimeout(() => {
+              resolve({
+                profile: { name: 'User', preferences: {} },
+                dashboardConfig: { theme: 'default', widgets: [] },
+                recentActivity: []
+              });
+            }, 1000);
+          });
+          
+          // Cache user data
+          sessionStorage.setItem('userData', JSON.stringify(userData));
+          updateProgress(85, 'User data loaded', 'success');
+          return userData;
+          
+        } catch (error) {
+          throw new Error(`Failed to load user data: ${error.message}`);
+        }
+      }
+
+      // Initialize dashboard
+      async function initializeDashboard() {
+        updateProgress(95, 'Preparing dashboard...', 'loading');
+        
+        try {
+          // Simulate dashboard initialization
+          await new Promise(resolve => setTimeout(resolve, 800));
+          
+          updateProgress(100, 'Dashboard ready!', 'success');
+          return { ready: true };
+          
+        } catch (error) {
+          throw new Error(`Dashboard initialization failed: ${error.message}`);
+        }
+      }
+
+      // Complete loading sequence
+      function completeLoading() {
+        console.log('Loading sequence completed successfully');
+        
+        const container = document.getElementById('loadingContainer');
+        if (container) {
+          container.classList.add('fade-out');
+        }
+        
+        // Set completion flag and redirect
+        sessionStorage.setItem('loadingComplete', 'true');
+        sessionStorage.setItem('fromLoading', 'true');
+        
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 800);
+      }
+
+      // Main loading sequence
+      async function startLoadingSequence() {
+        hideError();
+        currentStepIndex = 0;
         
         const steps = [
-          { progress: 0, message: 'Initializing...' },
-          { progress: 15, message: 'Connecting to server...' },
-          { progress: 30, message: 'Authenticating user...' },
-          { progress: 45, message: 'Loading user data...' },
-          { progress: 60, message: 'Preparing dashboard...' },
-          { progress: 75, message: 'Finalizing setup...' },
-          { progress: 90, message: 'Almost ready...' },
-          { progress: 100, message: 'Welcome to NumSphere!' }
+          { func: checkServerStatus, name: 'Server Check' },
+          { func: validateAuthentication, name: 'Authentication' },
+          { func: loadUserData, name: 'User Data' },
+          { func: initializeDashboard, name: 'Dashboard Init' }
         ];
         
-        let currentStep = 0;
-        
-        function updateProgress() {
-          if (currentStep < steps.length) {
-            const step = steps[currentStep];
-            progressBar.style.width = step.progress + '%';
-            loadingMessage.textContent = step.message;
+        try {
+          for (let i = 0; i < steps.length; i++) {
+            currentStepIndex = i;
+            console.log(`Executing step ${i + 1}: ${steps[i].name}`);
+            await steps[i].func();
             
-            console.log(`Progress: ${step.progress}% - ${step.message}`);
-            
-            currentStep++;
-            
-            // Variable timing for more realistic feel
-            const delay = currentStep < 3 ? 800 : 
-                         currentStep < 6 ? 600 : 400;
-            
-            setTimeout(updateProgress, delay);
+            // Small delay between steps for better UX
+            await new Promise(resolve => setTimeout(resolve, 300));
+          }
+          
+          // All steps completed successfully
+          setTimeout(completeLoading, 1000);
+          
+        } catch (error) {
+          console.error('Loading sequence failed:', error);
+          
+          // Handle specific error types
+          if (error.message.includes('authentication') || error.message.includes('auth')) {
+            // Redirect to login for auth errors
+            setTimeout(() => {
+              window.location.href = 'login.html';
+            }, 2000);
+            showError('Authentication failed. Redirecting to login...', false);
           } else {
-            // Loading complete
-            setTimeout(completeLoading, 800);
+            // Show retry option for other errors
+            showError(error.message, currentRetries < CONFIG.MAX_RETRIES);
           }
         }
-        
-        setTimeout(updateProgress, 500);
       }
-      
-      // Complete loading and redirect
-      function completeLoading() {
-        console.log('Completing loading sequence');
-        const container = document.getElementById('loadingContainer');
-        
-        if (container) {
-          // Add completion animation
-          container.classList.add('slide-up');
-          document.body.classList.add('fade-out');
-        }
-        
-        // Redirect to dashboard
-       setTimeout(() => {
-    // Check if we have the required session data
-    const isAuthenticated = sessionStorage.getItem('isAuthenticated');
-    const userEmail = sessionStorage.getItem('userEmail');
-    
-    console.log('Auth check:', { isAuthenticated, userEmail });
-    
-    if (isAuthenticated === 'true' && userEmail) {
-        console.log('Redirecting to dashboard');
-        // Set flag that we're coming from loading screen
-        sessionStorage.setItem('fromLoading', 'true');
-        window.location.href = 'dashboard.html';
-    } else {
-        // Fallback to login if session is invalid
-        console.log('Redirecting to login - invalid session');
-        window.location.href = 'Login.html';
-    }
-}, 600);
-      }
-      
-      // Initialize loading screen
-      document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM loaded, starting initialization');
-        
-        // Verify authentication
-        const isAuthenticated = sessionStorage.getItem('isAuthenticated');
-        const userEmail = sessionStorage.getItem('userEmail');
-        
-        console.log('Session check:', { isAuthenticated, userEmail });
-        
-        if (isAuthenticated !== 'true' || !userEmail) {
-          // If not authenticated, redirect to login immediately
-          console.log('Not authenticated, redirecting to login');
-          window.location.href = 'Login.html';
+
+      // Retry connection
+      window.retryConnection = function() {
+        if (currentRetries >= CONFIG.MAX_RETRIES) {
+          showError('Maximum retry attempts reached. Please refresh the page.', false);
           return;
         }
         
-        console.log('Authentication verified, starting loading sequence');
-        createParticles();
-        simulateProgress();
+        currentRetries++;
+        console.log(`Retry attempt ${currentRetries}/${CONFIG.MAX_RETRIES}`);
+        startLoadingSequence();
+      };
+
+      // Initialize when DOM is ready
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('NumSphere loading screen initialized');
         
-        // Fallback timer in case something goes wrong
+        // Create visual effects
+        createParticles();
+        
+        // Check if we should be here
+        const isAuthenticated = sessionStorage.getItem('isAuthenticated') || 
+                               localStorage.getItem('isAuthenticated');
+        
+        if (isAuthenticated !== 'true') {
+          console.log('Not authenticated, redirecting to login');
+          window.location.href = 'login.html';
+          return;
+        }
+        
+        // Start the loading sequence
+        setTimeout(startLoadingSequence, 500);
+        
+        // Fallback timeout
         setTimeout(() => {
           if (document.getElementById('loadingContainer')) {
-            console.log('Fallback timer triggered');
-            completeLoading();
+            console.warn('Loading timeout reached, forcing completion');
+            showError('Loading is taking longer than expected. Please try again.', true);
           }
-        }, 8000);
+        }, 30000);
       });
-      
-      // Handle page visibility changes
+
+      // Handle visibility changes
       document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-          // Pause animations when tab is not visible
-          document.body.style.animationPlayState = 'paused';
-        } else {
-          // Resume animations when tab becomes visible
-          document.body.style.animationPlayState = 'running';
-        }
+        const animationElements = document.querySelectorAll('[style*="animation"]');
+        animationElements.forEach(el => {
+          el.style.animationPlayState = document.hidden ? 'paused' : 'running';
+        });
       });
-      
-      // Error handling
+
+      // Global error handler
       window.addEventListener('error', function(e) {
-        console.error('Loading screen error:', e.error);
+        console.error('Global error:', e.error);
+        showError('An unexpected error occurred. Please try again.', true);
       });
-      
+
+      // Handle unhandled promise rejections
+      window.addEventListener('unhandledrejection', function(e) {
+        console.error('Unhandled promise rejection:', e.reason);
+        e.preventDefault();
+      });
+
     })();
   </script>
 </body>
