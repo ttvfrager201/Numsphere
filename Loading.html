@@ -520,7 +520,7 @@
           if (error.message.includes('authentication') || error.message.includes('auth')) {
             // Redirect to login for auth errors
             setTimeout(() => {
-              window.location.href = 'login.html';
+              window.location.href = 'Login.html';
             }, 2000);
             showError('Authentication failed. Redirecting to login...', false);
           } else {
@@ -555,7 +555,7 @@
         
         if (isAuthenticated !== 'true') {
           console.log('Not authenticated, redirecting to login');
-          window.location.href = 'login.html';
+          window.location.href = 'Login.html';
           return;
         }
         
