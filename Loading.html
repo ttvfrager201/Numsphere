@@ -161,6 +161,7 @@
     .status-loading { background: #4ecdc4; }
     .status-success { background: #45b7d1; }
     .status-error { background: #ff6b6b; }
+    .status-warning { background: #ffd93d; }
     
     .particles {
       position: absolute;
@@ -274,13 +275,14 @@
 
       // Configuration
       const CONFIG = {
-        API_BASE_URL: 'https://numsphere-proxy.onrender.com',
-        TIMEOUT: 15000, // 15 seconds
+        PRIMARY_SERVER: 'https://numsphere-proxy.onrender.com',
+        BACKUP_SERVER: 'https://numsphere-proxy-backup.onrender.com',
+        TIMEOUT: 10000, // 10 seconds
         MAX_RETRIES: 3
       };
 
       let currentRetries = 0;
-      let loadingSteps = [];
+      let activeServer = null;
       let currentStepIndex = 0;
 
       // Create floating particles
@@ -341,58 +343,79 @@
         window.location.href = 'Login.html';
       };
 
-      // API call wrapper with timeout
-      async function apiCall(url, options = {}) {
+      // Test server connectivity
+      async function testServer(serverUrl) {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), CONFIG.TIMEOUT);
         
         try {
-          const response = await fetch(url, {
-            ...options,
+          console.log(`Testing server: ${serverUrl}`);
+          
+          const response = await fetch(serverUrl, {
+            method: 'GET',
             signal: controller.signal,
             headers: {
               'Content-Type': 'application/json',
-              ...options.headers
+              'Accept': 'application/json'
             }
           });
           
           clearTimeout(timeoutId);
           
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          // Check if response is successful
+          if (response.ok) {
+            console.log(`Server ${serverUrl} is responsive`);
+            return { success: true, status: response.status, server: serverUrl };
+          } else {
+            console.log(`Server ${serverUrl} returned status: ${response.status}`);
+            return { success: false, status: response.status, server: serverUrl };
           }
           
-          return await response.json();
         } catch (error) {
           clearTimeout(timeoutId);
+          console.log(`Server ${serverUrl} failed:`, error.message);
+          
           if (error.name === 'AbortError') {
-            throw new Error('Request timeout - please check your connection');
+            return { success: false, error: 'timeout', server: serverUrl };
           }
-          throw error;
+          return { success: false, error: error.message, server: serverUrl };
         }
       }
 
-      // Check server status
+      // Check server status with fallback
       async function checkServerStatus() {
-        updateProgress(10, 'Checking server status...', 'loading');
+        updateProgress(10, 'Checking primary server...', 'loading');
         
         try {
-          // Try to ping the actual server first
-          const response = await fetch(CONFIG.API_BASE_URL + '/health', {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
-          }).catch(() => {
-            // If server check fails, simulate success for demo
-            return { ok: true, json: () => Promise.resolve({ status: 'ok' }) };
-          });
+          // Test primary server first
+          let result = await testServer(CONFIG.PRIMARY_SERVER);
           
-          updateProgress(25, 'Server connection established', 'success');
-          return { status: 'ok', timestamp: Date.now() };
+          if (result.success) {
+            activeServer = CONFIG.PRIMARY_SERVER;
+            updateProgress(30, 'Connected to primary server', 'success');
+            console.log('Using primary server:', activeServer);
+            return { status: 'ok', server: 'primary', timestamp: Date.now() };
+          }
+          
+          // If primary fails, try backup server
+          updateProgress(15, 'Primary server unavailable, trying backup...', 'warning');
+          console.log('Primary server failed, testing backup server...');
+          
+          result = await testServer(CONFIG.BACKUP_SERVER);
+          
+          if (result.success) {
+            activeServer = CONFIG.BACKUP_SERVER;
+            updateProgress(30, 'Connected to backup server', 'success');
+            console.log('Using backup server:', activeServer);
+            return { status: 'ok', server: 'backup', timestamp: Date.now() };
+          }
+          
+          // Both servers failed
+          throw new Error('Both primary and backup servers are unavailable. Please try again later.');
           
         } catch (error) {
-          console.warn('Server check failed, continuing anyway:', error.message);
-          updateProgress(25, 'Server connection established', 'success');
-          return { status: 'ok', timestamp: Date.now() };
+          console.error('Server connectivity check failed:', error);
+          throw new Error(`Server connection failed: ${error.message}`);
         }
       }
 
@@ -412,7 +435,8 @@
         console.log('Authentication check:', { 
           isAuthenticated, 
           userEmail: userEmail ? '***@' + userEmail.split('@')[1] : 'none',
-          hasToken: !!authToken 
+          hasToken: !!authToken,
+          activeServer: activeServer
         });
         
         if (isAuthenticated !== 'true' || !userEmail) {
@@ -420,12 +444,17 @@
         }
         
         try {
-          // Simulate authentication validation with server
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          // Simulate authentication validation
+          await new Promise(resolve => setTimeout(resolve, 1200));
           
           // Store auth token if not present
           if (!sessionStorage.getItem('authToken')) {
             sessionStorage.setItem('authToken', userEmail + '_' + Date.now());
+          }
+          
+          // Store which server is being used
+          if (activeServer) {
+            sessionStorage.setItem('activeServer', activeServer);
           }
           
           updateProgress(60, 'Authentication verified', 'success');
@@ -436,7 +465,8 @@
               verified: true,
               name: sessionStorage.getItem('userName') || 'User'
             },
-            permissions: ['dashboard', 'analytics']
+            permissions: ['dashboard', 'analytics'],
+            server: activeServer
           };
           
         } catch (error) {
@@ -455,8 +485,8 @@
           const userPhone = sessionStorage.getItem('userPhone') || '';
           const userPlan = sessionStorage.getItem('userPlan') || 'Basic';
           
-          // Simulate loading user data from server
-          await new Promise(resolve => setTimeout(resolve, 800));
+          // Simulate loading user data
+          await new Promise(resolve => setTimeout(resolve, 1000));
           
           const userData = {
             profile: { 
@@ -467,7 +497,11 @@
               preferences: {} 
             },
             dashboardConfig: { theme: 'default', widgets: [] },
-            recentActivity: []
+            recentActivity: [],
+            serverInfo: {
+              activeServer: activeServer,
+              connectedAt: Date.now()
+            }
           };
           
           // Cache user data
@@ -486,10 +520,10 @@
         
         try {
           // Simulate dashboard initialization
-          await new Promise(resolve => setTimeout(resolve, 600));
+          await new Promise(resolve => setTimeout(resolve, 800));
           
           updateProgress(100, 'Dashboard ready!', 'success');
-          return { ready: true };
+          return { ready: true, server: activeServer };
           
         } catch (error) {
           throw new Error(`Dashboard initialization failed: ${error.message}`);
@@ -499,6 +533,7 @@
       // Complete loading sequence
       function completeLoading() {
         console.log('Loading sequence completed successfully');
+        console.log('Active server:', activeServer);
         
         const container = document.getElementById('loadingContainer');
         if (container) {
@@ -510,7 +545,6 @@
         sessionStorage.setItem('fromLoading', 'true');
         
         setTimeout(() => {
-          // Check if dashboard.html exists, otherwise redirect to a success page
           window.location.href = 'dashboard.html';
         }, 800);
       }
@@ -519,6 +553,7 @@
       async function startLoadingSequence() {
         hideError();
         currentStepIndex = 0;
+        activeServer = null;
         
         const steps = [
           { func: checkServerStatus, name: 'Server Check' },
@@ -534,11 +569,11 @@
             await steps[i].func();
             
             // Small delay between steps for better UX
-            await new Promise(resolve => setTimeout(resolve, 200));
+            await new Promise(resolve => setTimeout(resolve, 300));
           }
           
           // All steps completed successfully
-          setTimeout(completeLoading, 1000);
+          setTimeout(completeLoading, 1200);
           
         } catch (error) {
           console.error('Loading sequence failed:', error);
@@ -547,10 +582,10 @@
           if (error.message.includes('Authentication required') || 
               error.message.includes('authentication') || 
               error.message.includes('auth')) {
-            // Show error with login option for auth errors
             showError('Authentication required. Please log in to continue.', false);
+          } else if (error.message.includes('server') || error.message.includes('unavailable')) {
+            showError(error.message, currentRetries < CONFIG.MAX_RETRIES);
           } else {
-            // Show retry option for other errors
             showError(error.message, currentRetries < CONFIG.MAX_RETRIES);
           }
         }
@@ -559,7 +594,7 @@
       // Retry connection
       window.retryConnection = function() {
         if (currentRetries >= CONFIG.MAX_RETRIES) {
-          showError('Maximum retry attempts reached. Please refresh the page or log in again.', false);
+          showError('Maximum retry attempts reached. Please refresh the page or check your connection.', false);
           return;
         }
         
@@ -571,6 +606,10 @@
       // Initialize when DOM is ready
       document.addEventListener('DOMContentLoaded', function() {
         console.log('NumSphere loading screen initialized');
+        console.log('Servers configured:', {
+          primary: CONFIG.PRIMARY_SERVER,
+          backup: CONFIG.BACKUP_SERVER
+        });
         
         // Create visual effects
         createParticles();
@@ -586,16 +625,16 @@
         }
         
         // Start the loading sequence
-        setTimeout(startLoadingSequence, 500);
+        setTimeout(startLoadingSequence, 600);
         
         // Fallback timeout
         setTimeout(() => {
           if (document.getElementById('loadingContainer') && 
               !document.getElementById('loadingContainer').classList.contains('fade-out')) {
             console.warn('Loading timeout reached');
-            showError('Loading is taking longer than expected. Please try again or refresh the page.', true);
+            showError('Loading is taking longer than expected. Please try again.', true);
           }
-        }, 30000);
+        }, 35000);
       });
 
       // Handle visibility changes
