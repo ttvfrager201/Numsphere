@@ -480,8 +480,8 @@
           console.log(`Testing server health: ${serverUrl}`);
           
           // Simple GET request to the server root
-          const response = await fetch(serverUrl, {
-            method: 'GET',
+          const response = await fetch(`${serverUrl}/status`, {
+  method: 'GET',
             signal: controller.signal,
             headers: {
               'Accept': 'application/json',
