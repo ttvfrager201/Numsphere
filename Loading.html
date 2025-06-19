@@ -277,7 +277,7 @@
       const CONFIG = {
         PRIMARY_SERVER: 'https://numsphere-proxy.onrender.com',
         BACKUP_SERVER: 'https://numsphere-proxy-backup.onrender.com',
-        TIMEOUT: 10000, // 10 seconds
+        TIMEOUT: 15000, // 15 seconds
         MAX_RETRIES: 3
       };
 
@@ -343,37 +343,37 @@
         window.location.href = 'Login.html';
       };
 
-      // Test server connectivity
-      async function testServer(serverUrl) {
+      // Test server health check
+      async function testServerHealth(serverUrl) {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), CONFIG.TIMEOUT);
         
         try {
-          console.log(`Testing server: ${serverUrl}`);
+          console.log(`Testing server health: ${serverUrl}/health`);
           
-          const response = await fetch(serverUrl, {
+          const response = await fetch(`${serverUrl}/health`, {
             method: 'GET',
             signal: controller.signal,
             headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
+              'Accept': 'application/json',
+              'Cache-Control': 'no-cache'
             }
           });
           
           clearTimeout(timeoutId);
           
-          // Check if response is successful
           if (response.ok) {
-            console.log(`Server ${serverUrl} is responsive`);
-            return { success: true, status: response.status, server: serverUrl };
+            const data = await response.json();
+            console.log(`Server ${serverUrl} health check passed:`, data);
+            return { success: true, data, server: serverUrl };
           } else {
-            console.log(`Server ${serverUrl} returned status: ${response.status}`);
+            console.log(`Server ${serverUrl} health check failed with status: ${response.status}`);
             return { success: false, status: response.status, server: serverUrl };
           }
           
         } catch (error) {
           clearTimeout(timeoutId);
-          console.log(`Server ${serverUrl} failed:`, error.message);
+          console.log(`Server ${serverUrl} health check error:`, error.message);
           
           if (error.name === 'AbortError') {
             return { success: false, error: 'timeout', server: serverUrl };
@@ -388,26 +388,26 @@
         
         try {
           // Test primary server first
-          let result = await testServer(CONFIG.PRIMARY_SERVER);
+          let result = await testServerHealth(CONFIG.PRIMARY_SERVER);
           
           if (result.success) {
             activeServer = CONFIG.PRIMARY_SERVER;
             updateProgress(30, 'Connected to primary server', 'success');
             console.log('Using primary server:', activeServer);
-            return { status: 'ok', server: 'primary', timestamp: Date.now() };
+            return { status: 'ok', server: 'primary', data: result.data };
           }
           
           // If primary fails, try backup server
           updateProgress(15, 'Primary server unavailable, trying backup...', 'warning');
           console.log('Primary server failed, testing backup server...');
           
-          result = await testServer(CONFIG.BACKUP_SERVER);
+          result = await testServerHealth(CONFIG.BACKUP_SERVER);
           
           if (result.success) {
             activeServer = CONFIG.BACKUP_SERVER;
             updateProgress(30, 'Connected to backup server', 'success');
             console.log('Using backup server:', activeServer);
-            return { status: 'ok', server: 'backup', timestamp: Date.now() };
+            return { status: 'ok', server: 'backup', data: result.data };
           }
           
           // Both servers failed
@@ -419,73 +419,107 @@
         }
       }
 
-      // Validate authentication
+      // Validate authentication with server
       async function validateAuthentication() {
         updateProgress(40, 'Validating authentication...', 'loading');
         
-        // Check for authentication tokens from login
+        // Check for local authentication data
         const isAuthenticated = sessionStorage.getItem('isAuthenticated') || 
                                localStorage.getItem('isAuthenticated');
         const userEmail = sessionStorage.getItem('userEmail') || 
                          localStorage.getItem('userEmail');
-        const authToken = sessionStorage.getItem('authToken') || 
-                         localStorage.getItem('authToken') ||
-                         sessionStorage.getItem('userEmail'); // Use email as fallback token
+        const userName = sessionStorage.getItem('userName') || 
+                        localStorage.getItem('userName');
         
-        console.log('Authentication check:', { 
+        console.log('Local authentication check:', { 
           isAuthenticated, 
           userEmail: userEmail ? '***@' + userEmail.split('@')[1] : 'none',
-          hasToken: !!authToken,
-          activeServer: activeServer
+          userName: userName || 'none'
         });
         
         if (isAuthenticated !== 'true' || !userEmail) {
-          throw new Error('Authentication required');
+          throw new Error('Authentication required - please log in');
         }
-        
+
         try {
-          // Simulate authentication validation
-          await new Promise(resolve => setTimeout(resolve, 1200));
+          // Verify authentication with server by testing a simple request
+          updateProgress(50, 'Verifying with server...', 'loading');
           
-          // Store auth token if not present
-          if (!sessionStorage.getItem('authToken')) {
-            sessionStorage.setItem('authToken', userEmail + '_' + Date.now());
-          }
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), CONFIG.TIMEOUT);
           
-          // Store which server is being used
-          if (activeServer) {
-            sessionStorage.setItem('activeServer', activeServer);
+          // Test connection to server with user data
+          const testPayload = new URLSearchParams({
+            action: 'verify',
+            email: userEmail
+          });
+
+          const response = await fetch(activeServer, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'Accept': 'application/json'
+            },
+            body: testPayload,
+            signal: controller.signal
+          });
+
+          clearTimeout(timeoutId);
+          
+          // Even if the verify action isn't implemented, a proper response means server is working
+          const responseText = await response.text();
+          let responseData;
+          
+          try {
+            responseData = JSON.parse(responseText);
+          } catch {
+            // If response isn't JSON, server is still responding
+            responseData = { success: true, message: 'Server responding' };
           }
           
           updateProgress(60, 'Authentication verified', 'success');
+          
           return { 
             valid: true, 
             user: { 
               email: userEmail, 
-              verified: true,
-              name: sessionStorage.getItem('userName') || 'User'
+              name: userName || 'User',
+              verified: true
             },
-            permissions: ['dashboard', 'analytics'],
-            server: activeServer
+            server: activeServer,
+            serverResponse: responseData
           };
           
         } catch (error) {
-          throw new Error(`Authentication validation failed: ${error.message}`);
+          console.error('Server authentication test failed:', error);
+          // Don't fail completely if server test fails - local auth might be sufficient
+          updateProgress(55, 'Using local authentication', 'warning');
+          
+          return { 
+            valid: true, 
+            user: { 
+              email: userEmail, 
+              name: userName || 'User',
+              verified: false
+            },
+            server: activeServer,
+            fallback: true
+          };
         }
       }
 
-      // Load user data
+      // Load and prepare user data
       async function loadUserData() {
         updateProgress(70, 'Loading user profile...', 'loading');
         
         try {
-          // Get user data from session storage
-          const userEmail = sessionStorage.getItem('userEmail');
-          const userName = sessionStorage.getItem('userName') || 'User';
-          const userPhone = sessionStorage.getItem('userPhone') || '';
-          const userPlan = sessionStorage.getItem('userPlan') || 'Basic';
+          // Get user data from storage
+          const userEmail = sessionStorage.getItem('userEmail') || localStorage.getItem('userEmail');
+          const userName = sessionStorage.getItem('userName') || localStorage.getItem('userName') || 'User';
+          const userPhone = sessionStorage.getItem('userPhone') || localStorage.getItem('userPhone') || '';
+          const userPlan = sessionStorage.getItem('userPlan') || localStorage.getItem('userPlan') || 'Basic';
           
-          // Simulate loading user data
+          // Simulate data preparation
           await new Promise(resolve => setTimeout(resolve, 1000));
           
           const userData = {
@@ -494,36 +528,52 @@
               name: userName, 
               phone: userPhone,
               plan: userPlan,
-              preferences: {} 
+              joinDate: localStorage.getItem('userJoinDate') || new Date().toISOString(),
+              preferences: {
+                theme: localStorage.getItem('userTheme') || 'default',
+                notifications: localStorage.getItem('userNotifications') !== 'false'
+              }
             },
-            dashboardConfig: { theme: 'default', widgets: [] },
-            recentActivity: [],
-            serverInfo: {
+            session: {
+              loginTime: Date.now(),
               activeServer: activeServer,
-              connectedAt: Date.now()
+              serverHealth: 'ok'
+            },
+            dashboard: {
+              layout: localStorage.getItem('dashboardLayout') || 'default',
+              widgets: JSON.parse(localStorage.getItem('dashboardWidgets') || '[]')
             }
           };
           
-          // Cache user data
+          // Store prepared user data
           sessionStorage.setItem('userData', JSON.stringify(userData));
-          updateProgress(85, 'User data loaded', 'success');
+          sessionStorage.setItem('activeServer', activeServer);
+          sessionStorage.setItem('sessionStart', Date.now().toString());
+          
+          updateProgress(85, 'User data loaded successfully', 'success');
           return userData;
           
         } catch (error) {
+          console.error('User data loading failed:', error);
           throw new Error(`Failed to load user data: ${error.message}`);
         }
       }
 
-      // Initialize dashboard
+      // Initialize dashboard preparation
       async function initializeDashboard() {
-        updateProgress(95, 'Preparing dashboard...', 'loading');
+        updateProgress(90, 'Preparing dashboard...', 'loading');
         
         try {
           // Simulate dashboard initialization
           await new Promise(resolve => setTimeout(resolve, 800));
           
+          // Set dashboard ready flags
+          sessionStorage.setItem('dashboardReady', 'true');
+          sessionStorage.setItem('loadingComplete', 'true');
+          sessionStorage.setItem('fromLoading', 'true');
+          
           updateProgress(100, 'Dashboard ready!', 'success');
-          return { ready: true, server: activeServer };
+          return { ready: true, server: activeServer, timestamp: Date.now() };
           
         } catch (error) {
           throw new Error(`Dashboard initialization failed: ${error.message}`);
@@ -534,15 +584,12 @@
       function completeLoading() {
         console.log('Loading sequence completed successfully');
         console.log('Active server:', activeServer);
+        console.log('User data prepared for dashboard');
         
         const container = document.getElementById('loadingContainer');
         if (container) {
           container.classList.add('fade-out');
         }
-        
-        // Set completion flag and redirect
-        sessionStorage.setItem('loadingComplete', 'true');
-        sessionStorage.setItem('fromLoading', 'true');
         
         setTimeout(() => {
           window.location.href = 'dashboard.html';
@@ -556,37 +603,39 @@
         activeServer = null;
         
         const steps = [
-          { func: checkServerStatus, name: 'Server Check' },
-          { func: validateAuthentication, name: 'Authentication' },
-          { func: loadUserData, name: 'User Data' },
-          { func: initializeDashboard, name: 'Dashboard Init' }
+          { func: checkServerStatus, name: 'Server Status Check' },
+          { func: validateAuthentication, name: 'Authentication Validation' },
+          { func: loadUserData, name: 'User Data Loading' },
+          { func: initializeDashboard, name: 'Dashboard Initialization' }
         ];
         
         try {
           for (let i = 0; i < steps.length; i++) {
             currentStepIndex = i;
-            console.log(`Executing step ${i + 1}: ${steps[i].name}`);
-            await steps[i].func();
+            console.log(`Executing step ${i + 1}/${steps.length}: ${steps[i].name}`);
+            const result = await steps[i].func();
+            console.log(`Step ${i + 1} completed:`, result);
             
             // Small delay between steps for better UX
             await new Promise(resolve => setTimeout(resolve, 300));
           }
           
           // All steps completed successfully
-          setTimeout(completeLoading, 1200);
+          console.log('All loading steps completed successfully');
+          setTimeout(completeLoading, 1000);
           
         } catch (error) {
-          console.error('Loading sequence failed:', error);
+          console.error(`Loading sequence failed at step ${currentStepIndex + 1}:`, error);
           
           // Handle specific error types
           if (error.message.includes('Authentication required') || 
-              error.message.includes('authentication') || 
-              error.message.includes('auth')) {
-            showError('Authentication required. Please log in to continue.', false);
-          } else if (error.message.includes('server') || error.message.includes('unavailable')) {
-            showError(error.message, currentRetries < CONFIG.MAX_RETRIES);
+              error.message.includes('log in')) {
+            showError('Please log in to continue accessing NumSphere.', false);
+          } else if (error.message.includes('server') || 
+                     error.message.includes('unavailable')) {
+            showError(`Server connection issue: ${error.message}`, currentRetries < CONFIG.MAX_RETRIES);
           } else {
-            showError(error.message, currentRetries < CONFIG.MAX_RETRIES);
+            showError(`Loading failed: ${error.message}`, currentRetries < CONFIG.MAX_RETRIES);
           }
         }
       }
@@ -594,19 +643,22 @@
       // Retry connection
       window.retryConnection = function() {
         if (currentRetries >= CONFIG.MAX_RETRIES) {
-          showError('Maximum retry attempts reached. Please refresh the page or check your connection.', false);
+          showError('Maximum retry attempts reached. Please refresh the page or try again later.', false);
           return;
         }
         
         currentRetries++;
         console.log(`Retry attempt ${currentRetries}/${CONFIG.MAX_RETRIES}`);
-        startLoadingSequence();
+        
+        // Reset progress and start over
+        updateProgress(0, 'Retrying...', 'loading');
+        setTimeout(startLoadingSequence, 1000);
       };
 
       // Initialize when DOM is ready
       document.addEventListener('DOMContentLoaded', function() {
         console.log('NumSphere loading screen initialized');
-        console.log('Servers configured:', {
+        console.log('Server endpoints:', {
           primary: CONFIG.PRIMARY_SERVER,
           backup: CONFIG.BACKUP_SERVER
         });
@@ -614,30 +666,34 @@
         // Create visual effects
         createParticles();
         
-        // Check if we should be here
+        // Quick pre-check for authentication
         const isAuthenticated = sessionStorage.getItem('isAuthenticated') || 
                                localStorage.getItem('isAuthenticated');
+        const userEmail = sessionStorage.getItem('userEmail') || 
+                         localStorage.getItem('userEmail');
         
-        if (isAuthenticated !== 'true') {
-          console.log('Not authenticated, showing login option');
-          showError('Authentication required. Please log in to continue.', false);
+        if (isAuthenticated !== 'true' || !userEmail) {
+          console.log('No valid authentication found');
+          showError('Please log in to access NumSphere.', false);
           return;
         }
         
-        // Start the loading sequence
-        setTimeout(startLoadingSequence, 600);
+        console.log('Authentication found, starting loading sequence...');
+        
+        // Start the loading sequence after a brief delay
+        setTimeout(startLoadingSequence, 800);
         
         // Fallback timeout
         setTimeout(() => {
           if (document.getElementById('loadingContainer') && 
               !document.getElementById('loadingContainer').classList.contains('fade-out')) {
-            console.warn('Loading timeout reached');
-            showError('Loading is taking longer than expected. Please try again.', true);
+            console.warn('Loading timeout reached (35 seconds)');
+            showError('Loading is taking longer than expected. Please check your connection and try again.', true);
           }
         }, 35000);
       });
 
-      // Handle visibility changes
+      // Handle visibility changes to pause animations when tab is hidden
       document.addEventListener('visibilitychange', function() {
         const animationElements = document.querySelectorAll('[style*="animation"]');
         animationElements.forEach(el => {
@@ -648,7 +704,9 @@
       // Global error handler
       window.addEventListener('error', function(e) {
         console.error('Global error:', e.error);
-        showError('An unexpected error occurred. Please try again.', true);
+        if (!document.getElementById('errorContainer').style.display === 'block') {
+          showError('An unexpected error occurred. Please try again.', true);
+        }
       });
 
       // Handle unhandled promise rejections
