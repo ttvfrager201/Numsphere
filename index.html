@@ -1690,12 +1690,12 @@ input:focus + .input-icon, textarea:focus + .input-icon {
   }
 
      document.addEventListener("DOMContentLoaded", function () {
-    const loginButton = document.getElementById("loginBtn");
-    const userToken = localStorage.getItem("userToken"); // or sessionStorage if you're using that
+    const loginBtn = document.getElementById("loginBtn");
+    const isAuthenticated = sessionStorage.getItem("isAuthenticated");
 
-    if (userToken) {
-      loginButton.textContent = "Dashboard";
-      loginButton.href = "dashboard.html";
+    if (isAuthenticated === "true") {
+      loginBtn.textContent = "Dashboard";
+      loginBtn.href = "dashboard.html";
     }
   });
 
