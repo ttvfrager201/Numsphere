@@ -1121,9 +1121,7 @@ input:focus + .input-icon, textarea:focus + .input-icon {
   <a href="#">Pricing</a>
   <a href="#">Testimonials</a>
 </div>
-<a href="Login.html" class="get-started">Login</a>
-
-
+<a href="Login.html" class="get-started" id="loginBtn">Login</a>
   </nav>
   
   <!-- Hero Section -->
@@ -1690,6 +1688,16 @@ input:focus + .input-icon, textarea:focus + .input-icon {
     const menu = document.getElementById('navMenu');
     menu.classList.toggle('active');
   }
+
+     document.addEventListener("DOMContentLoaded", function () {
+    const loginButton = document.getElementById("loginBtn");
+    const userToken = localStorage.getItem("userToken"); // or sessionStorage if you're using that
+
+    if (userToken) {
+      loginButton.textContent = "Dashboard";
+      loginButton.href = "dashboard.html";
+    }
+  });
 
   </script>
 </body>
