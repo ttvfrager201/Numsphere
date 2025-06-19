@@ -1013,16 +1013,21 @@
     }
     
     // Secure logout function
-    function logoutUser() {
-      showBanner('You have been logged out.');
-      
-      setTimeout(() => {
-        document.body.classList.remove('authenticated');
-        sessionStorage.setItem('isLoggingOut', 'true');
-        sessionStorage.clear();
-        window.location.href = 'Login.html';
-      }, 1000);
-    }
+   function logoutUser() {
+  showBanner('You have been logged out.');
+
+  setTimeout(() => {
+    // Optional: If you're using body class for animations or page state
+    document.body.classList.remove('authenticated');
+
+    // Clear all session data
+    sessionStorage.clear();
+
+    // Redirect to home or login page
+    window.location.href = 'index.html'; // You can use 'Login.html' if you prefer
+  }, 1000);
+}
+
     
     // Prevent back button access after logout
     function preventBackButton() {
