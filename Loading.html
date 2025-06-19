@@ -375,14 +375,13 @@
     (function() {
       'use strict';
 
-      // Enhanced configuration with better timeout handling
+      // Enhanced configuration with simplified server testing
       const CONFIG = {
         PRIMARY_SERVER: 'https://numsphere-proxy.onrender.com',
         BACKUP_SERVER: 'https://numsphere-proxy-backup.onrender.com',
         TIMEOUT: 8000,
         MAX_RETRIES: 2,
-        OFFLINE_MODE_DELAY: 12000,
-        HEALTH_CHECK_ENDPOINTS: ['/health', '/ping', '/status']
+        OFFLINE_MODE_DELAY: 12000
       };
 
       let currentRetries = 0;
@@ -472,54 +471,53 @@
         if (offlineContainer) offlineContainer.style.display = 'none';
       }
 
-      // Enhanced server health check with multiple endpoints
+      // Simplified server health check - just test the main server URL
       async function testServerHealth(serverUrl) {
-        const endpoints = CONFIG.HEALTH_CHECK_ENDPOINTS;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), CONFIG.TIMEOUT);
         
-        for (const endpoint of endpoints) {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), CONFIG.TIMEOUT);
+        try {
+          console.log(`Testing server health: ${serverUrl}`);
           
-          try {
-            console.log(`Testing server health: ${serverUrl}${endpoint}`);
-            
-            const response = await fetch(`${serverUrl}${endpoint}`, {
-              method: 'GET',
-              signal: controller.signal,
-              headers: {
-                'Accept': 'application/json',
-                'Cache-Control': 'no-cache'
-              }
-            });
-            
-            clearTimeout(timeoutId);
-            
-            if (response.status < 500) {
-              console.log(`Server ${serverUrl} is responding (${response.status})`);
-              try {
-                const data = await response.json();
-                return { success: true, data, server: serverUrl, endpoint };
-              } catch {
-                return { success: true, data: { status: 'alive' }, server: serverUrl, endpoint };
-              }
+          // Simple GET request to the server root
+          const response = await fetch(serverUrl, {
+            method: 'GET',
+            signal: controller.signal,
+            headers: {
+              'Accept': 'application/json',
+              'Cache-Control': 'no-cache'
             }
-            
-          } catch (error) {
-            clearTimeout(timeoutId);
-            console.log(`Endpoint ${endpoint} failed:`, error.message);
+          });
+          
+          clearTimeout(timeoutId);
+          
+          // Server is responding if we get any response (even if it's 404 or 405)
+          // The important thing is that the server is reachable
+          if (response) {
+            console.log(`Server ${serverUrl} is responding (${response.status})`);
+            return { 
+              success: true, 
+              data: { status: 'alive', code: response.status }, 
+              server: serverUrl 
+            };
           }
+          
+        } catch (error) {
+          clearTimeout(timeoutId);
+          console.log(`Server ${serverUrl} failed:`, error.message);
         }
         
         return { success: false, server: serverUrl };
       }
 
-      // Enhanced server status check with better fallback
+      // Enhanced server status check with simplified testing
       async function checkServerStatus() {
         updateProgress(10, 'Checking server connectivity...', 'loading');
         updateServerStatus('primary', 'loading');
         updateServerStatus('backup', 'loading');
         
         try {
+          // Test primary server
           let result = await testServerHealth(CONFIG.PRIMARY_SERVER);
           
           if (result.success) {
@@ -533,6 +531,7 @@
             updateServerStatus('primary', 'error');
           }
           
+          // Test backup server
           updateProgress(20, 'Trying backup server...', 'warning');
           updateServerStatus('backup', 'loading');
           
@@ -548,6 +547,7 @@
             updateServerStatus('backup', 'error');
           }
           
+          // Check if we should offer offline mode
           const timeSinceStart = Date.now() - connectionAttemptTime;
           if (timeSinceStart > CONFIG.OFFLINE_MODE_DELAY || currentRetries >= CONFIG.MAX_RETRIES) {
             throw new Error('OFFLINE_MODE_AVAILABLE');
@@ -847,108 +847,83 @@
         console.log('Redirecting to login page');
         sessionStorage.clear();
         window.location.href = 'login.html';
-        };
+      };
 
-      // Handle browser back/forward navigation
-      window.addEventListener('popstate', function(event) {
-        console.log('Navigation detected, redirecting to login');
-        goToLogin();
-      });
-
-      // Handle page visibility changes
-      document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-          console.log('Page hidden, pausing loading checks');
-        } else {
-          console.log('Page visible, resuming loading checks');
+   window.addEventListener('popstate', function(event) {
+        console.log('Browser navigation detected');
+        if (event.state && event.state.page === 'loading') {
+          // User navigated back to loading page
+          location.reload();
         }
       });
 
-      // Handle connection state changes
+      // Handle page visibility changes (tab switching)
+      document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible') {
+          console.log('Page became visible again');
+          // Optional: Check if we need to refresh connection status
+        }
+      });
+
+      // Handle connection status changes
       window.addEventListener('online', function() {
-        console.log('Connection restored');
-        if (offlineMode) {
-          updateProgress(15, 'Connection restored - retrying...', 'success');
+        console.log('Internet connection restored');
+        if (offlineMode && !activeServer) {
+          updateProgress(15, 'Connection restored - retrying...', 'loading');
           setTimeout(() => {
-            offlineMode = false;
             currentRetries = 0;
+            offlineMode = false;
             startLoadingSequence();
           }, 1000);
         }
       });
 
       window.addEventListener('offline', function() {
-        console.log('Connection lost');
+        console.log('Internet connection lost');
         updateProgress(25, 'Connection lost - offline mode available', 'warning');
-        setTimeout(showOfflineMode, 2000);
       });
 
-      // Handle page unload
+      // Handle unload events
       window.addEventListener('beforeunload', function() {
-        console.log('Page unloading, cleaning up...');
-        sessionStorage.removeItem('loadingInProgress');
+        console.log('Page unloading - cleaning up');
+        // Clean up any pending timeouts or requests
       });
 
-      // Prevent duplicate loading sessions
-      if (sessionStorage.getItem('loadingInProgress') === 'true') {
-        console.log('Loading already in progress, redirecting...');
-        window.location.href = 'dashboard.html';
-        return;
-      }
-
-      // Initialize loading sequence
-      sessionStorage.setItem('loadingInProgress', 'true');
-      
-      // Set up periodic cleanup
-      setInterval(() => {
-        const particles = document.querySelectorAll('.particle');
-        if (particles.length > 30) {
-          particles.forEach((particle, index) => {
-            if (index < particles.length - 15) {
-              particle.remove();
-            }
-          });
+      // Error handling for uncaught errors
+      window.addEventListener('error', function(event) {
+        console.error('Uncaught error:', event.error);
+        if (!document.getElementById('errorContainer').style.display || 
+            document.getElementById('errorContainer').style.display === 'none') {
+          showError('An unexpected error occurred. Please try refreshing the page.', true);
         }
-      }, 10000);
+      });
 
-      // Start the loading process
+      // Initialize the application
       document.addEventListener('DOMContentLoaded', function() {
         console.log('NumSphere Loading Page initialized');
-        console.log('User Agent:', navigator.userAgent);
-        console.log('Connection type:', navigator.connection ? navigator.connection.effectiveType : 'unknown');
+        console.log('Configuration:', CONFIG);
         
+        // Create visual effects
         createParticles();
         
-        // Add small delay to ensure UI is ready
-        setTimeout(() => {
-          startLoadingSequence();
-        }, 500);
+        // Add state to browser history
+        history.replaceState({ page: 'loading' }, 'Loading - NumSphere', window.location.href);
+        
+        // Start the loading sequence after a brief delay
+        setTimeout(startLoadingSequence, 800);
       });
 
-      // Fallback initialization if DOMContentLoaded already fired
-      if (document.readyState === 'loading') {
-        // DOM is still loading
-      } else {
-        // DOM is already loaded
-        console.log('DOM already loaded, initializing immediately');
-        createParticles();
-        setTimeout(() => {
-          startLoadingSequence();
-        }, 500);
+      // Expose configuration for debugging (development only)
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        window.DEBUG_CONFIG = CONFIG;
+        window.DEBUG_STATE = {
+          getCurrentRetries: () => currentRetries,
+          getActiveServer: () => activeServer,
+          getCurrentStep: () => currentStepIndex,
+          isOfflineMode: () => offlineMode
+        };
+        console.log('Debug mode enabled - CONFIG and STATE available in window');
       }
-
-      // Add global error handler
-      window.addEventListener('error', function(event) {
-        console.error('Global error caught:', event.error);
-        showError('An unexpected error occurred. Please try again.', true);
-      });
-
-      // Add unhandled promise rejection handler
-      window.addEventListener('unhandledrejection', function(event) {
-        console.error('Unhandled promise rejection:', event.reason);
-        showError('Connection error occurred. Please check your internet connection.', true);
-        event.preventDefault();
-      });
 
     })();
   </script>
