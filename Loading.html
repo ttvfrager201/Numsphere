@@ -482,12 +482,14 @@
           // Simple GET request to the server root
           const response = await fetch(`${serverUrl}/status`, {
   method: 'GET',
-            signal: controller.signal,
-            headers: {
-              'Accept': 'application/json',
-              'Cache-Control': 'no-cache'
-            }
-          });
+             headers: {
+        'Accept': 'application/json',
+        'Cache-Control': 'no-cache'
+    },
+    mode: 'cors' // Ensure this is set for cross-origin requests
+}).then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
           
           clearTimeout(timeoutId);
           
